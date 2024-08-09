@@ -1,0 +1,2 @@
+C:\Users\Wissotsky\Desktop\camcompute\Corneroids\project\Corneroids\obj\Debug\Corneroids.csproj.AssemblyReference.cache
+C:\Users\Wissotsky\Desktop\camcompute\Corneroids\project\Corneroids\obj\Debug\Corneroids.csproj.CoreCompileInputs.cache

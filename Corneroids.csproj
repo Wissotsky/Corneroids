@@ -1,0 +1,426 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--Project was exported from assembly: C:\Users\Wissotsky\Desktop\camcompute\Corneroids\Corneroids.exe-->
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4F2A1FC1-3F70-438E-8F51-88639F9AB197}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AssemblyName>Corneroids</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <ApplicationVersion>1.0.0.0</ApplicationVersion>
+    <FileAlignment>512</FileAlignment>
+    <RootNamespace>CornerSpace</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Lidgren.Network">
+      <HintPath>lib\Lidgren.Network.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework" />
+    <Reference Include="Microsoft.Xna.Framework.Game" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.SQLite">
+      <HintPath>lib\System.Data.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="WorldDataStorageInterface.cs" />
+    <Compile Include="IBillboard.cs" />
+    <Compile Include="Item.cs" />
+    <Compile Include="PlaceableItem.cs" />
+    <Compile Include="BlockItem.cs" />
+    <Compile Include="ISuitRatings.cs" />
+    <Compile Include="IByteSerializable.cs" />
+    <Compile Include="Suit.cs" />
+    <Compile Include="PackedEntity.cs" />
+    <Compile Include="ControlBlocksStates.cs" />
+    <Compile Include="ItemOperationManager.cs" />
+    <Compile Include="ILightingInterface.cs" />
+    <Compile Include="LightingManager.cs" />
+    <Compile Include="BlockRenderManager`1.cs" />
+    <Compile Include="GameScreen.cs" />
+    <Compile Include="EntityCreationParameters.cs" />
+    <Compile Include="AsteroidCreationParameters.cs" />
+    <Compile Include="PhysicalObject.cs" />
+    <Compile Include="IRenderCamera.cs" />
+    <Compile Include="ICameraInterface.cs" />
+    <Compile Include="Camera.cs" />
+    <Compile Include="BlockType.cs" />
+    <Compile Include="PowerBlockType.cs" />
+    <Compile Include="GunBlockType.cs" />
+    <Compile Include="Block.cs" />
+    <Compile Include="BasicBlock.cs" />
+    <Compile Include="AsteroidBlock.cs" />
+    <Compile Include="LoadedPlayerContainer`1.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="LightSource.cs" />
+    <Compile Include="SpotLight.cs" />
+    <Compile Include="Flashlight.cs" />
+    <Compile Include="IInput.cs" />
+    <Compile Include="PlayerSerializedData.cs" />
+    <Compile Include="EntityCompressor.cs" />
+    <Compile Include="VertexBufferObj.cs" />
+    <Compile Include="KeyBindingManager.cs" />
+    <Compile Include="PowerBlock.cs" />
+    <Compile Include="TriggerBlock.cs" />
+    <Compile Include="EngineBlock.cs" />
+    <Compile Include="SpaceSector.cs" />
+    <Compile Include="EntityStorageInterface.cs" />
+    <Compile Include="OctTreeNode`1.cs" />
+    <Compile Include="IBlockOctTreeNode.cs" />
+    <Compile Include="EnvironmentManager.cs" />
+    <Compile Include="BuilderManager.cs" />
+    <Compile Include="BuilderManagerSP.cs" />
+    <Compile Include="ILightChunk.cs" />
+    <Compile Include="SynchronizationValue.cs" />
+    <Compile Include="BillboardVertex.cs" />
+    <Compile Include="SettingsManager.cs" />
+    <Compile Include="ScreenBuffer.cs" />
+    <Compile Include="ISpaceEntities.cs" />
+    <Compile Include="BoundingBoxI.cs" />
+    <Compile Include="IBoardable.cs" />
+    <Compile Include="IRemarkable.cs" />
+    <Compile Include="SpaceEntity.cs" />
+    <Compile Include="BlockSectorManager.cs" />
+    <Compile Include="CraftingManager.cs" />
+    <Compile Include="ControlKey.cs" />
+    <Compile Include="KeyboardControlKey.cs" />
+    <Compile Include="IMountable`1.cs" />
+    <Compile Include="ControlBlock.cs" />
+    <Compile Include="LightBlockType.cs" />
+    <Compile Include="PointLightBlockType.cs" />
+    <Compile Include="Inventory.cs" />
+    <Compile Include="NodeCollision.cs" />
+    <Compile Include="OctTreeLeafNode`1.cs" />
+    <Compile Include="BlockCell.cs" />
+    <Compile Include="SpaceEntityManager.cs" />
+    <Compile Include="ProjectileManager.cs" />
+    <Compile Include="ProjectileManagerSP.cs" />
+    <Compile Include="InputDevice.cs" />
+    <Compile Include="IKeyboardInterface.cs" />
+    <Compile Include="KeyboardDevice.cs" />
+    <Compile Include="InventoryItem.cs" />
+    <Compile Include="WearableItem.cs" />
+    <Compile Include="BlockVertex.cs" />
+    <Compile Include="TextureAtlas.cs" />
+    <Compile Include="SpaceEntityManagerClient.cs" />
+    <Compile Include="CollisionManager.cs" />
+    <Compile Include="SpaceEntityFactory.cs" />
+    <Compile Include="Character.cs" />
+    <Compile Include="IController`1.cs" />
+    <Compile Include="Astronaut.cs" />
+    <Compile Include="Engine.cs" />
+    <Compile Include="BasicBlockType.cs" />
+    <Compile Include="PlayerCache`1.cs" />
+    <Compile Include="Player.cs" />
+    <Compile Include="WorldView.cs" />
+    <Compile Include="StoredValues.cs" />
+    <Compile Include="ShaderManager.cs" />
+    <Compile Include="StaticBlockRenderManager.cs" />
+    <Compile Include="PackedBlockSector.cs" />
+    <Compile Include="DynamicBlockRenderManager.cs" />
+    <Compile Include="Byte4.cs" />
+    <Compile Include="PowerGridSolver.cs" />
+    <Compile Include="AICharacter.cs" />
+    <Compile Include="HostileCharacter.cs" />
+    <Compile Include="ParasiteCharacter.cs" />
+    <Compile Include="ICollisionObject.cs" />
+    <Compile Include="Itemset.cs" />
+    <Compile Include="IPlayerStorage.cs" />
+    <Compile Include="World.cs" />
+    <Compile Include="DatabaseStructure.cs" />
+    <Compile Include="ProjectileType.cs" />
+    <Compile Include="LocalPlayer.cs" />
+    <Compile Include="ItemWithModel.cs" />
+    <Compile Include="LightingItem.cs" />
+    <Compile Include="ToolItem.cs" />
+    <Compile Include="BindTriggerToControlTool.cs" />
+    <Compile Include="BindCameraToControlTool.cs" />
+    <Compile Include="OctTreeCollisonContainer`1.cs" />
+    <Compile Include="DynamicBlockVertex.cs" />
+    <Compile Include="Vector3int.cs" />
+    <Compile Include="ProjectileManagerClient.cs" />
+    <Compile Include="Byte3.cs" />
+    <Compile Include="SpaceshipInfo.cs" />
+    <Compile Include="Console.cs" />
+    <Compile Include="IDynamicBlock.cs" />
+    <Compile Include="LightBlock.cs" />
+    <Compile Include="InputReader.cs" />
+    <Compile Include="NetworkPlayer.cs" />
+    <Compile Include="StateFrame.cs" />
+    <Compile Include="SpaceEntityCompressor.cs" />
+    <Compile Include="NetworkClientManager.cs" />
+    <Compile Include="Buff.cs" />
+    <Compile Include="SpaceDustManager.cs" />
+    <Compile Include="Byte2.cs" />
+    <Compile Include="SmallFlyerCharacter.cs" />
+    <Compile Include="ControlBlockType.cs" />
+    <Compile Include="GunControlBlock.cs" />
+    <Compile Include="DummyEntity.cs" />
+    <Compile Include="OctTree`2.cs" />
+    <Compile Include="BlockOctTree.cs" />
+    <Compile Include="SelectorBox`1.cs" />
+    <Compile Include="ItemSlot.cs" />
+    <Compile Include="LocalClientPlayer.cs" />
+    <Compile Include="ArmorRating.cs" />
+    <Compile Include="PackedEntityContainer.cs" />
+    <Compile Include="SpaceEntityManagerServer.cs" />
+    <Compile Include="BlockTextureCoordinates.cs" />
+    <Compile Include="BlockSector.cs" />
+    <Compile Include="PowerSocket.cs" />
+    <Compile Include="IElapsedTime.cs" />
+    <Compile Include="FrameCounter.cs" />
+    <Compile Include="KeyBinding.cs" />
+    <Compile Include="WindowBlock.cs" />
+    <Compile Include="MineralBlock.cs" />
+    <Compile Include="BlockOctTreeNode.cs" />
+    <Compile Include="NetworkPlayerOnClient.cs" />
+    <Compile Include="BlockSpriteTextureAtlas.cs" />
+    <Compile Include="ProjectileManagerServer.cs" />
+    <Compile Include="BlockSectorCompressor.cs" />
+    <Compile Include="BoundingSphereI.cs" />
+    <Compile Include="ColorKeyGroup.cs" />
+    <Compile Include="IBlockObstacle.cs" />
+    <Compile Include="ContainerBlock.cs" />
+    <Compile Include="ContainerBlockType.cs" />
+    <Compile Include="IMouseInterface.cs" />
+    <Compile Include="IAICharacterManagement.cs" />
+    <Compile Include="CharacterManager.cs" />
+    <Compile Include="EnvironmentManagerClient.cs" />
+    <Compile Include="BeaconTool.cs" />
+    <Compile Include="PowerNetwork.cs" />
+    <Compile Include="ISortedEntities.cs" />
+    <Compile Include="PointLightBlock.cs" />
+    <Compile Include="Projectile.cs" />
+    <Compile Include="NodePair`1.cs" />
+    <Compile Include="RadarDisplay.cs" />
+    <Compile Include="ProjectileVertex.cs" />
+    <Compile Include="EntityStateContainer.cs" />
+    <Compile Include="SpeedOMeter.cs" />
+    <Compile Include="GraphicBuffersManager.cs" />
+    <Compile Include="AsteroidBlockType.cs" />
+    <Compile Include="CameraBlock.cs" />
+    <Compile Include="DrillBlockTool.cs" />
+    <Compile Include="EntityExtractor.cs" />
+    <Compile Include="CharacterManagerClient.cs" />
+    <Compile Include="SpaceModel.cs" />
+    <Compile Include="LandscapeModel.cs" />
+    <Compile Include="CollisionData.cs" />
+    <Compile Include="BlockBuilder.cs" />
+    <Compile Include="EngineBlockType.cs" />
+    <Compile Include="WeaponItem.cs" />
+    <Compile Include="MouseDevice.cs" />
+    <Compile Include="NetworkPlayerOnServer.cs" />
+    <Compile Include="ControlsManager.cs" />
+    <Compile Include="InputFrame.cs" />
+    <Compile Include="IndexBufferObj.cs" />
+    <Compile Include="DoorBlock.cs" />
+    <Compile Include="MineralBlockType.cs" />
+    <Compile Include="WorldIOManager.cs" />
+    <Compile Include="PointLight.cs" />
+    <Compile Include="OctTreeCollisionPoint`1.cs" />
+    <Compile Include="EnvironmentManagerServer.cs" />
+    <Compile Include="ModelStructure`1.cs" />
+    <Compile Include="BeaconObject.cs" />
+    <Compile Include="GunBlock.cs" />
+    <Compile Include="WindowBlockType.cs" />
+    <Compile Include="GunControlBlockType.cs" />
+    <Compile Include="WorldManager.cs" />
+    <Compile Include="WorldInfo.cs" />
+    <Compile Include="ClientWorld.cs" />
+    <Compile Include="OctTreeLinkNode`1.cs" />
+    <Compile Include="BindGunToControlTool.cs" />
+    <Compile Include="SpriteTextureAtlas.cs" />
+    <Compile Include="NetworkServerManager.cs" />
+    <Compile Include="EntityTransferHelper.cs" />
+    <Compile Include="CharacterManagerServer.cs" />
+    <Compile Include="ThrusterRenderManager.cs" />
+    <Compile Include="DummySpaceEntity.cs" />
+    <Compile Include="DoorBlockType.cs" />
+    <Compile Include="CraftingBlock.cs" />
+    <Compile Include="CameraBlockType.cs" />
+    <Compile Include="LocalWorld.cs" />
+    <Compile Include="SettingsFile.cs" />
+    <Compile Include="BlockOctTreeLinkNode.cs" />
+    <Compile Include="InputManager.cs" />
+    <Compile Include="StateFrameBuffer.cs" />
+    <Compile Include="TimedEventManager.cs" />
+    <Compile Include="TorchItem.cs" />
+    <Compile Include="PackedControlBlock.cs" />
+    <Compile Include="Position3.cs" />
+    <Compile Include="Blueprint.cs" />
+    <Compile Include="BlockTextureAtlas.cs" />
+    <Compile Include="ConsumableItem.cs" />
+    <Compile Include="BillboardBatch.cs" />
+    <Compile Include="AsteroidBeltCreationParameters.cs" />
+    <Compile Include="CraftingBlockType.cs" />
+    <Compile Include="Networking\ISynchronizable.cs" />
+    <Compile Include="Networking\NetworkDispatcher`2.cs" />
+    <Compile Include="Networking\EventHandler`2.cs" />
+    <Compile Include="Networking\DataEventHandler`2.cs" />
+    <Compile Include="Networking\ClientEntityDataManager.cs" />
+    <Compile Include="Networking\ClientPlayerDataReciever.cs" />
+    <Compile Include="Networking\ServerToClientConnection.cs" />
+    <Compile Include="Networking\SequencedEventHandler`1.cs" />
+    <Compile Include="Networking\ClientConnectionInitializerHandler.cs" />
+    <Compile Include="Networking\ServerPlayerUpdateListener.cs" />
+    <Compile Include="Networking\ServerControlDataHandler.cs" />
+    <Compile Include="Networking\ClientEntityReceiver.cs" />
+    <Compile Include="Networking\ServerDisconnectListener.cs" />
+    <Compile Include="Networking\ClientProjectileDataHandler.cs" />
+    <Compile Include="Networking\BlockEvent.cs" />
+    <Compile Include="Networking\ClientOtherClientsHandler.cs" />
+    <Compile Include="Networking\ClientItemEventHandler.cs" />
+    <Compile Include="Networking\ClientDisconnectListener.cs" />
+    <Compile Include="Networking\INetwork.cs" />
+    <Compile Include="Networking\INetworkClient.cs" />
+    <Compile Include="Networking\NetworkPeer.cs" />
+    <Compile Include="Networking\NetworkClient.cs" />
+    <Compile Include="Networking\IPlayerList.cs" />
+    <Compile Include="Networking\ServerInformation.cs" />
+    <Compile Include="Networking\INetworkServer.cs" />
+    <Compile Include="Networking\NetworkServer.cs" />
+    <Compile Include="Networking\ServerChatMessageHandler.cs" />
+    <Compile Include="Networking\ClientReceiveWorldDataHandler.cs" />
+    <Compile Include="Networking\ClientEntityDataListener.cs" />
+    <Compile Include="Networking\ClientControlDataListener.cs" />
+    <Compile Include="Networking\ServerConnetionInitializerHandler.cs" />
+    <Compile Include="Networking\ClientEntityStateReceiver.cs" />
+    <Compile Include="Networking\ClientChatMessageHandler.cs" />
+    <Compile Include="Networking\ServerPlayerDataSender.cs" />
+    <Compile Include="Networking\ServerEntityTransactionHandler.cs" />
+    <Compile Include="Networking\ClientPlayerUpdateListener.cs" />
+    <Compile Include="Networking\ClientBlockDataHandler.cs" />
+    <Compile Include="Networking\ServerSendWorldDataHandler.cs" />
+    <Compile Include="Networking\ClientGameEventListener.cs" />
+    <Compile Include="Networking\INetworkClientManager.cs" />
+    <Compile Include="Networking\MessageContainer.cs" />
+    <Compile Include="Networking\ServerPlayerRequestListener.cs" />
+    <Compile Include="Networking\ServerDataSynchronizer.cs" />
+    <Compile Include="GUI\Layer.cs" />
+    <Compile Include="GUI\WindowLayer.cs" />
+    <Compile Include="GUI\DescriptionLayer.cs" />
+    <Compile Include="GUI\FieldLayer.cs" />
+    <Compile Include="GUI\TextBoxLayer.cs" />
+    <Compile Include="GUI\SpriteImage.cs" />
+    <Compile Include="GUI\ItemLayer.cs" />
+    <Compile Include="GUI\CharacterLayer.cs" />
+    <Compile Include="GUI\ItemDescriptionLayer.cs" />
+    <Compile Include="GUI\ChatWindowLayer.cs" />
+    <Compile Include="GUI\ScrollbarLayer.cs" />
+    <Compile Include="GUI\VerticalScrollbarLayer.cs" />
+    <Compile Include="GUI\IScrollable.cs" />
+    <Compile Include="GUI\CaptionWindowLayer.cs" />
+    <Compile Include="GUI\RotateBlockLayer.cs" />
+    <Compile Include="GUI\CheckboxLayer.cs" />
+    <Compile Include="GUI\ColorKeyGroupLayer.cs" />
+    <Compile Include="GUI\ButtonLayer.cs" />
+    <Compile Include="GUI\ButtonLayerWithTag`1.cs" />
+    <Compile Include="GUI\InventoryLayer.cs" />
+    <Compile Include="GUI\ItemPreviewLayer.cs" />
+    <Compile Include="GUI\ControlBlockKeygroupsLayer.cs" />
+    <Compile Include="GUI\EditLightBlockLayer.cs" />
+    <Compile Include="GUI\UnitBarLayer.cs" />
+    <Compile Include="GUI\GraphicsMenuLayer.cs" />
+    <Compile Include="GUI\BlueprintLayer.cs" />
+    <Compile Include="GUI\HorizontalScrollbarLayer.cs" />
+    <Compile Include="GUI\RestrictedInventoryLayer.cs" />
+    <Compile Include="GUI\ConsoleLayer.cs" />
+    <Compile Include="GUI\ConfirmationLayer.cs" />
+    <Compile Include="GUI\WearableInventoryLayer.cs" />
+    <Compile Include="GUI\ScoreboardLayer.cs" />
+    <Compile Include="GUI\PowerNetworkInfoLayer.cs" />
+    <Compile Include="GUI\CraftingLayer.cs" />
+    <Compile Include="GUI\AskKeyLayer.cs" />
+    <Compile Include="GUI\MainMenuLayer.cs" />
+    <Compile Include="GUI\CameraGroupLayer.cs" />
+    <Compile Include="GUI\TrashInventoryLayer.cs" />
+    <Compile Include="GUI\DefaultItemInventoryLayer.cs" />
+    <Compile Include="GUI\ComboboxLayer`1.cs" />
+    <Compile Include="GUI\ItemToolbarLayer.cs" />
+    <Compile Include="Screen\MenuScreen.cs" />
+    <Compile Include="Screen\ReadInputScreen.cs" />
+    <Compile Include="Screen\PowerNetworkInformationScreen.cs" />
+    <Compile Include="Screen\OptionsScreen.cs" />
+    <Compile Include="Screen\DirectConnectScreen.cs" />
+    <Compile Include="Screen\SpaceScreen.cs" />
+    <Compile Include="Screen\ClientSpaceScreen.cs" />
+    <Compile Include="Screen\AdventureScreenClient.cs" />
+    <Compile Include="Screen\CreateNewWorldScreen.cs" />
+    <Compile Include="Screen\AdventureScreenSP.cs" />
+    <Compile Include="Screen\MultiplayerScreen.cs" />
+    <Compile Include="Screen\ControlsOptionsScreen.cs" />
+    <Compile Include="Screen\HostGameScreen.cs" />
+    <Compile Include="Screen\GameplayOptionsScreen.cs" />
+    <Compile Include="Screen\RotateBlockScreen.cs" />
+    <Compile Include="Screen\BeaconScreen.cs" />
+    <Compile Include="Screen\ChooseWorldScreen.cs" />
+    <Compile Include="Screen\ServerSpaceScreen.cs" />
+    <Compile Include="Screen\AdventureScreenServer.cs" />
+    <Compile Include="Screen\PlayerSetupScreen.cs" />
+    <Compile Include="Screen\AdminPanelScreen.cs" />
+    <Compile Include="Screen\ItemScreen.cs" />
+    <Compile Include="Screen\ControlBlockKeygroupsScreen.cs" />
+    <Compile Include="Screen\ContainerBlockScreen.cs" />
+    <Compile Include="Screen\AskKeyScreen.cs" />
+    <Compile Include="Screen\GameMenuClient.cs" />
+    <Compile Include="Screen\CraftingScreen.cs" />
+    <Compile Include="Screen\EditLightBlockScreen.cs" />
+    <Compile Include="Screen\ComboboxScreen`1.cs" />
+    <Compile Include="Screen\ConnectingScreen.cs" />
+    <Compile Include="Screen\MainMenuScreen.cs" />
+    <Compile Include="Screen\MessageScreen.cs" />
+    <Compile Include="Screen\BlueprintsScreen.cs" />
+    <Compile Include="Screen\GameMenuSingleplayerScreen.cs" />
+    <Compile Include="Screen\GameMenuServer.cs" />
+    <Compile Include="Screen\ConfirmScreen.cs" />
+    <Compile Include="Screen\PasswordScreen.cs" />
+    <Compile Include="Screen\SingleplayerTutorialScreen.cs" />
+    <Compile Include="Screen\SavingScreen.cs" />
+    <Compile Include="Screen\GraphicsOptionScreen.cs" />
+    <Compile Include="Screen\ItemListScreen.cs" />
+    <Compile Include="Screen\CharacterScreen.cs" />
+    <Compile Include="Utility\XmlStructure.cs" />
+    <Compile Include="Utility\Primitive.cs" />
+    <Compile Include="Utility\XmlReader.cs" />
+    <Compile Include="Utility\SimpleMath.cs" />
+    <Compile Include="Utility\Md5.cs" />
+    <Compile Include="Utility\NoiseGenerator.cs" />
+    <Compile Include="Utility\Gzip.cs" />
+    <Compile Include="Utility\IdGen.cs" />
+    <Compile Include="Enemies\EggParasite`1.cs" />
+    <Compile Include="Enemies\SwarmEggParasite.cs" />
+    <Compile Include="Enemies\ScavengerFlyer.cs" />
+    <Compile Include="Enemies\NeedleParasite.cs" />
+    <Compile Include="Enemies\MineralParasite.cs" />
+    <Compile Include="GameScreens\Gui\TimedNotificationScreen.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Microsoft\Xna\Framework.RuntimeProfile" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
