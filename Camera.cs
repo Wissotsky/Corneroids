@@ -180,14 +180,14 @@ namespace CornerSpace
     {
       switch (this.mode)
       {
-        case Camera.Mode.Fixed_plane:
-          this.Orientation = Quaternion.CreateFromYawPitchRoll(this.yaw, this.pitch, 0.0f);
-          break;
-        case Camera.Mode.Space:
-          Camera camera = this;
-          // ISSUE: explicit non-virtual call
-          camera.Orientation = __nonvirtual (camera.Orientation) * Quaternion.CreateFromYawPitchRoll(deltaYaw, deltaPitch, deltaRoll);
-          break;
+      case Camera.Mode.Fixed_plane:
+        this.Orientation = Quaternion.CreateFromYawPitchRoll(this.yaw, this.pitch, 0.0f);
+        break;
+      case Camera.Mode.Space:
+        Camera camera = this;
+        // ISSUE: explicit non-virtual call
+        camera.Orientation = Quaternion.Concatenate(camera.Orientation, Quaternion.CreateFromYawPitchRoll(deltaYaw, deltaPitch, deltaRoll));
+        break;
       }
     }
 

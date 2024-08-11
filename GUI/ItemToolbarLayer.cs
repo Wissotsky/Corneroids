@@ -75,10 +75,7 @@ namespace CornerSpace.GUI
 
     public override void Render()
     {
-      Engine.SpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
-      Engine.GraphicsDevice.SamplerStates[0].MinFilter = TextureFilter.Point;
-      Engine.GraphicsDevice.SamplerStates[0].MipFilter = TextureFilter.Point;
-      Engine.GraphicsDevice.SamplerStates[0].MagFilter = TextureFilter.Point;
+      Engine.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, null, null);
       for (int index = 0; index < 8; ++index)
       {
         ItemSlot itemSlot = this.inventory.Items[index, 0];

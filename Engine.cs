@@ -82,48 +82,48 @@ namespace CornerSpace
     {
       try
       {
-        this.userDataFolder = this.PrepareUserDataFolder();
-        this.logPath = this.userDataFolder;
-        if (string.IsNullOrEmpty(this.userDataFolder))
-          this.Exit();
-        Engine.ContentManager = this.Content;
-        Engine.GraphicsDevice = this.graphics.GraphicsDevice;
-        Engine.console = new Console();
-        Engine.settingsManager = this.PrepareSettings(this.graphics);
-        Engine.storedvalues = this.LoadStoredValues();
-        this.Window.Title = "Corneroids";
-        if (this.SufficientPcCapabilities(Engine.GraphicsDevice))
-        {
-          this.graphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8Single;
-          Engine.SpriteBatch = new SpriteBatch(this.graphics.GraphicsDevice);
-          Engine.BasicEffect = new BasicEffect(this.graphics.GraphicsDevice, (EffectPool) null);
-          Engine.settingsManager.ApplyChanges();
-          Engine.Font = Engine.ContentManager.Load<SpriteFont>("Textures\\Sprites\\fontImage");
-          Engine.Font.DefaultCharacter = new char?('?');
-          this.mouseCursor = Engine.ContentManager.Load<Texture2D>("Textures\\mouseCursor");
-          this.InitializeTextureRegisters();
-          this.InitializeVertexDeclarations();
-          this.InitializeShaders();
-          this.LoadBlockTextureAtlases(this.Content.RootDirectory + "\\Textures\\Blocks\\");
-          this.LoadSpriteTextureAtlases(this.Content.RootDirectory + "\\Textures\\Sprites\\");
-          this.LoadBlocksets(this.Content.RootDirectory + "\\Blocksets\\");
-          this.IsMouseVisible = false;
-          Engine.GraphicsDevice.DeviceReset += new EventHandler(this.GraphicsDeviceReseted);
-          Engine.SettingsManager.GammaChangedEvent += new Action<int>(this.GammaChanged);
-          this.GammaChanged(Engine.SettingsManager.Gamma);
-          base.Initialize();
-          this.AddNewScreen((GameScreen) new MainMenuScreen());
-        }
-        else
-        {
-          int num = (int) MessageBox.Show("Your graphics device does not meet the requirements to play the game :(");
-          this.Exit();
-        }
+      this.userDataFolder = this.PrepareUserDataFolder();
+      this.logPath = this.userDataFolder;
+      if (string.IsNullOrEmpty(this.userDataFolder))
+        this.Exit();
+      Engine.ContentManager = this.Content;
+      Engine.GraphicsDevice = this.graphics.GraphicsDevice;
+      Engine.console = new Console();
+      Engine.settingsManager = this.PrepareSettings(this.graphics);
+      Engine.storedvalues = this.LoadStoredValues();
+      this.Window.Title = "Corneroids";
+      if (this.SufficientPcCapabilities(Engine.GraphicsDevice))
+      {
+        this.graphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
+        Engine.SpriteBatch = new SpriteBatch(this.graphics.GraphicsDevice);
+        Engine.BasicEffect = new BasicEffect(this.graphics.GraphicsDevice);
+        Engine.settingsManager.ApplyChanges();
+        Engine.Font = Engine.ContentManager.Load<SpriteFont>("Textures\\Sprites\\fontImage");
+        Engine.Font.DefaultCharacter = '?';
+        this.mouseCursor = Engine.ContentManager.Load<Texture2D>("Textures\\mouseCursor");
+        this.InitializeTextureRegisters();
+        this.InitializeVertexDeclarations();
+        this.InitializeShaders();
+        this.LoadBlockTextureAtlases(this.Content.RootDirectory + "\\Textures\\Blocks\\");
+        this.LoadSpriteTextureAtlases(this.Content.RootDirectory + "\\Textures\\Sprites\\");
+        this.LoadBlocksets(this.Content.RootDirectory + "\\Blocksets\\");
+        this.IsMouseVisible = false;
+        Engine.GraphicsDevice.DeviceReset += new EventHandler<EventArgs>(this.GraphicsDeviceReseted);
+        Engine.SettingsManager.GammaChangedEvent += new Action<int>(this.GammaChanged);
+        this.GammaChanged(Engine.SettingsManager.Gamma);
+        base.Initialize();
+        this.AddNewScreen(new MainMenuScreen());
+      }
+      else
+      {
+        int num = (int) MessageBox.Show("Your graphics device does not meet the requirements to play the game :(");
+        this.Exit();
+      }
       }
       catch
       {
-        int num = (int) MessageBox.Show("Failed to initialize the game.");
-        this.Exit();
+      int num = (int) MessageBox.Show("Failed to initialize the game.");
+      this.Exit();
       }
     }
 
@@ -223,31 +223,31 @@ namespace CornerSpace
     {
       try
       {
-        if (Engine.GraphicsDevice.GraphicsDeviceStatus != GraphicsDeviceStatus.Normal)
+        if (GraphicsDevice.GraphicsDeviceStatus != GraphicsDeviceStatus.Normal)
           return;
-        Engine.settingsManager.InitializeFrame();
-        for (int index = Math.Max(0, Engine.gameScreens.FindLastIndex((Predicate<GameScreen>) (s => s.ScreenType == GameScreen.Type.Fullscreen))); index < Engine.gameScreens.Count; ++index)
-          Engine.gameScreens[index].Render();
-        if (this.inputManager.GetMouseListener().CursorBehavior == MouseDevice.Behavior.Free)
-          this.RenderMouseCursor();
+        SettingsManager.InitializeFrame();
+        for (int index = Math.Max(0, gameScreens.FindLastIndex((Predicate<GameScreen>) (s => s.ScreenType == GameScreen.Type.Fullscreen))); index < gameScreens.Count; ++index)
+          gameScreens[index].Render();
+        if (inputManager.GetMouseListener().CursorBehavior == MouseDevice.Behavior.Free)
+          RenderMouseCursor();
         base.Draw(gameTime);
-        this.graphics.GraphicsDevice.Vertices[0].SetSource((VertexBuffer) null, 0, 0);
-        this.graphics.GraphicsDevice.Indices = (IndexBuffer) null;
+        GraphicsDevice.SetVertexBuffer(null);
+        GraphicsDevice.Indices = null;
       }
       catch (Exception ex)
       {
-        Engine.Console.WriteErrorLine("Fatal error during rendering phase: " + ex.StackTrace);
+        Console.WriteErrorLine("Fatal error during rendering phase: " + ex.StackTrace);
         try
         {
-          if (Engine.LoadedWorld != null)
-            Engine.LoadedWorld.Save();
-          int num = (int) MessageBox.Show("Fatal error during rendering phase. Game world saved!");
+          if (LoadedWorld != null)
+            LoadedWorld.Save();
+          int num = (int)MessageBox.Show("Fatal error during rendering phase. Game world saved!");
         }
         catch
         {
-          int num = (int) MessageBox.Show("Fatal error during rendering phase. Failed to save game world :(");
+          int num = (int)MessageBox.Show("Fatal error during rendering phase. Failed to save game world :(");
         }
-        this.Exit();
+        Exit();
       }
     }
 
@@ -354,21 +354,22 @@ namespace CornerSpace
 
     public static Texture2D LoadTexture(string path, bool generateMipmaps)
     {
-      StreamReader streamReader = (StreamReader) null;
+      //StreamReader streamReader = (StreamReader) null;
       try
       {
-        streamReader = new StreamReader(path);
-        return !generateMipmaps ? Texture2D.FromFile(Engine.GraphicsDevice, streamReader.BaseStream) : Texture2D.FromFile(Engine.GraphicsDevice, streamReader.BaseStream, TextureCreationParameters.Default);
+        //streamReader = new StreamReader(path);
+        //return !generateMipmaps ? Texture2D.FromFile(Engine.GraphicsDevice, streamReader.BaseStream) : Texture2D.FromFile(Engine.GraphicsDevice, streamReader.BaseStream, TextureCreationParameters.Default);
+        return !generateMipmaps ? Texture2D.FromFile(Engine.GraphicsDevice, path) : Texture2D.FromFile(Engine.GraphicsDevice, path);
       }
       catch (Exception ex)
       {
         Engine.Console.WriteErrorLine("Failed to load a texture: " + ex.Message);
         return (Texture2D) null;
       }
-      finally
-      {
-        streamReader?.Close();
-      }
+      //finally
+      //{
+      //  streamReader?.Close();
+      //}
     }
 
     public static void MessageBoxShow(string message)
@@ -408,12 +409,9 @@ namespace CornerSpace
         return false;
       }
     }
-
     public static void SetPointSamplerStateForSpritebatch()
     {
-      Engine.GraphicsDevice.SamplerStates[0].MinFilter = TextureFilter.Point;
-      Engine.GraphicsDevice.SamplerStates[0].MipFilter = TextureFilter.Point;
-      Engine.GraphicsDevice.SamplerStates[0].MagFilter = TextureFilter.Point;
+      Engine.GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp;
     }
 
     public static Console Console => Engine.console;
@@ -565,21 +563,21 @@ namespace CornerSpace
     {
       try
       {
-        Engine.VertexDeclarationPool = new VertexDeclaration[20];
-        Engine.VertexDeclarationPool[0] = new VertexDeclaration(Engine.GraphicsDevice, BlockVertex.VertexElements);
-        Engine.VertexDeclarationPool[1] = new VertexDeclaration(Engine.GraphicsDevice, VertexPositionColor.VertexElements);
-        Engine.VertexDeclarationPool[2] = new VertexDeclaration(Engine.GraphicsDevice, VertexPositionTexture.VertexElements);
-        Engine.VertexDeclarationPool[3] = new VertexDeclaration(Engine.GraphicsDevice, VertexPositionColorTexture.VertexElements);
-        Engine.VertexDeclarationPool[4] = new VertexDeclaration(Engine.GraphicsDevice, DynamicBlockVertex.VertexElements);
-        Engine.VertexDeclarationPool[5] = new VertexDeclaration(Engine.GraphicsDevice, ProjectileVertex.VertexElements);
-        Engine.VertexDeclarationPool[6] = new VertexDeclaration(Engine.GraphicsDevice, BillboardVertex.VertexElements);
-        Engine.VertexDeclarationPool[7] = new VertexDeclaration(Engine.GraphicsDevice, VertexPositionNormalTexture.VertexElements);
-        return true;
+      Engine.VertexDeclarationPool = new VertexDeclaration[20];
+      Engine.VertexDeclarationPool[0] = new VertexDeclaration(BlockVertex.VertexDeclaration.GetVertexElements());
+      Engine.VertexDeclarationPool[1] = new VertexDeclaration(VertexPositionColor.VertexDeclaration.GetVertexElements());
+      Engine.VertexDeclarationPool[2] = new VertexDeclaration(VertexPositionTexture.VertexDeclaration.GetVertexElements());
+      Engine.VertexDeclarationPool[3] = new VertexDeclaration(VertexPositionColorTexture.VertexDeclaration.GetVertexElements());
+      Engine.VertexDeclarationPool[4] = new VertexDeclaration(DynamicBlockVertex.VertexDeclaration.GetVertexElements());
+      Engine.VertexDeclarationPool[5] = new VertexDeclaration(ProjectileVertex.VertexDeclaration.GetVertexElements());
+      Engine.VertexDeclarationPool[6] = new VertexDeclaration(BillboardVertex.VertexDeclaration.GetVertexElements());
+      Engine.VertexDeclarationPool[7] = new VertexDeclaration(VertexPositionNormalTexture.VertexDeclaration.GetVertexElements());
+      return true;
       }
       catch (Exception ex)
       {
-        Engine.Console.WriteErrorLine("Failed to initialize vertex declarations: " + ex.Message);
-        return false;
+      Engine.Console.WriteErrorLine("Failed to initialize vertex declarations: " + ex.Message);
+      return false;
       }
     }
 
@@ -588,23 +586,20 @@ namespace CornerSpace
       SamplerState samplerState1 = Engine.GraphicsDevice.SamplerStates[1];
       samplerState1.AddressU = TextureAddressMode.Clamp;
       samplerState1.AddressV = TextureAddressMode.Clamp;
-      samplerState1.MagFilter = TextureFilter.Point;
-      samplerState1.MipFilter = TextureFilter.Point;
-      samplerState1.MinFilter = TextureFilter.Point;
+      samplerState1.Filter = TextureFilter.Point;
       SamplerState samplerState2 = Engine.GraphicsDevice.SamplerStates[7];
       samplerState2.AddressU = TextureAddressMode.Clamp;
       samplerState2.AddressV = TextureAddressMode.Clamp;
-      samplerState2.MagFilter = TextureFilter.Point;
-      samplerState2.MipFilter = TextureFilter.Point;
-      samplerState2.MinFilter = TextureFilter.Point;
+      samplerState2.Filter = TextureFilter.Point;
     }
 
     private bool SufficientPcCapabilities(GraphicsDevice gc)
     {
-      int simultaneousRenderTargets = gc.GraphicsDeviceCapabilities.MaxSimultaneousRenderTargets;
-      ShaderProfile vertexShaderProfile = gc.GraphicsDeviceCapabilities.MaxVertexShaderProfile;
-      ShaderProfile pixelShaderProfile = gc.GraphicsDeviceCapabilities.MaxPixelShaderProfile;
-      return simultaneousRenderTargets >= 3 && vertexShaderProfile >= ShaderProfile.VS_3_0 && pixelShaderProfile >= ShaderProfile.PS_3_0;
+      //int simultaneousRenderTargets = gc.GraphicsCapabilities.MaxSimultaneousRenderTargets;
+      //GraphicsProfile graphicsProfile = gc.GraphicsProfile;
+      //return simultaneousRenderTargets >= 3 && graphicsProfile >= GraphicsProfile.HiDef;
+      // TODO: Temp patch always returns true
+      return true;
     }
 
     private void LoadBlocksets(string directory)
@@ -723,8 +718,7 @@ namespace CornerSpace
 
     private void RenderMouseCursor()
     {
-      Engine.SpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
-      Engine.SetPointSamplerStateForSpritebatch();
+      Engine.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
       MouseDevice mouseListener = this.inputManager.GetMouseListener();
       Rectangle destinationRectangle = new Rectangle(mouseListener.Position.X, mouseListener.Position.Y, this.mouseCursor.Width * 2, this.mouseCursor.Height * 2);
       Engine.SpriteBatch.Draw(this.mouseCursor, destinationRectangle, Color.White);

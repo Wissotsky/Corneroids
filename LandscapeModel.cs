@@ -24,24 +24,22 @@ namespace CornerSpace
 
     public void Render(IRenderCamera camera)
     {
-      GraphicsDevice graphicsDevice = Engine.GraphicsDevice;
-      graphicsDevice.RenderState.CullMode = CullMode.None;
-      graphicsDevice.RenderState.AlphaBlendEnable = false;
-      foreach (ModelMesh mesh in this.Model.Meshes)
-      {
-        using (ModelEffectCollection.Enumerator enumerator = mesh.Effects.GetEnumerator())
+        GraphicsDevice graphicsDevice = Engine.GraphicsDevice;
+        graphicsDevice.RasterizerState = RasterizerState.CullNone;
+        graphicsDevice.BlendState = BlendState.Opaque;
+
+        foreach (ModelMesh mesh in this.Model.Meshes)
         {
-          if (enumerator.MoveNext())
-          {
-            BasicEffect current = (BasicEffect) enumerator.Current;
-            throw new NotImplementedException();
-          }
+            foreach (BasicEffect effect in mesh.Effects)
+            {
+                // Set effect parameters here
+                throw new NotImplementedException();
+            }
+            mesh.Draw();
         }
-        mesh.Draw();
-      }
     }
 
-    protected Model Model
+        protected Model Model
     {
       get => this.model;
       set => this.model = value;

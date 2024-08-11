@@ -300,38 +300,32 @@ namespace CornerSpace
         if (this.Speed != Vector3.Zero)
         {
           Vector3 vector3 = Vector3.Normalize(this.Speed);
-          if ((double) this.Speed.Length() < 0.02500000037252903)
+          if ((double)this.Speed.Length() < 0.02500000037252903)
           {
             this.Speed = Vector3.Zero;
           }
           else
           {
-            SpaceEntity spaceEntity = this;
-            spaceEntity.Speed = spaceEntity.Speed - vector3 * 0.25f * Engine.FrameCounter.DeltaTime;
+            this.Speed -= vector3 * 0.25f * Engine.FrameCounter.DeltaTime;
           }
         }
         if (this.Rotation != Vector3.Zero)
         {
           Vector3 vector3 = Vector3.Normalize(this.Rotation);
-          if ((double) this.Rotation.Length() < 3.0 / 1000.0)
+          if ((double)this.Rotation.Length() < 3.0 / 1000.0)
           {
             this.Rotation = Vector3.Zero;
           }
           else
           {
-            SpaceEntity spaceEntity = this;
-            // ISSUE: explicit non-virtual call
-            spaceEntity.Rotation = __nonvirtual (spaceEntity.Rotation) - vector3 * 0.03f * Engine.FrameCounter.DeltaTime;
+            this.Rotation -= vector3 * 0.03f * Engine.FrameCounter.DeltaTime;
           }
         }
       }
-      SpaceEntity spaceEntity1 = this;
-      spaceEntity1.Position = spaceEntity1.Position + this.Speed * Engine.FrameCounter.DeltaTime;
+      this.Position += this.Speed * Engine.FrameCounter.DeltaTime;
       if (this.Rotation != Vector3.Zero)
       {
-        SpaceEntity spaceEntity2 = this;
-        // ISSUE: explicit non-virtual call
-        spaceEntity2.Orientation = __nonvirtual (spaceEntity2.Orientation) * Quaternion.CreateFromAxisAngle(Vector3.Normalize(this.Rotation), this.Rotation.Length() * Engine.FrameCounter.DeltaTime);
+        this.Orientation *= Quaternion.CreateFromAxisAngle(Vector3.Normalize(this.Rotation), this.Rotation.Length() * Engine.FrameCounter.DeltaTime);
       }
       this.coordinateAxises[0] = Vector3.Transform(Vector3.UnitX, this.Orientation);
       this.coordinateAxises[1] = Vector3.Transform(Vector3.UnitY, this.Orientation);

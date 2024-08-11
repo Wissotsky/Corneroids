@@ -268,7 +268,7 @@ namespace CornerSpace
           flag2 = true;
         }
         if (flag1)
-          ItemWithModel.modelVB = new VertexBufferObj(Engine.GraphicsDevice, 900, VertexPositionNormalTexture.SizeInBytes, Engine.VertexDeclarationPool[7], BufferUsage.WriteOnly);
+          ItemWithModel.modelVB = new VertexBufferObj(Engine.GraphicsDevice, Engine.VertexDeclarationPool[7], 900, BufferUsage.WriteOnly);
         if (flag2)
           ItemWithModel.modelIB = new IndexBufferObj(Engine.GraphicsDevice, 1800, BufferUsage.WriteOnly, IndexElementSize.SixteenBits);
         ItemWithModel.modelVB.SetData<VertexPositionNormalTexture>(this.modelVertices);
@@ -283,25 +283,25 @@ namespace CornerSpace
 
     private void RenderModel()
     {
-      if (this.modelVertices == null || this.modelIndices == null)
-        this.CreateModel(this.SpriteCoordsRect, this.SpriteCoordsUV, Engine.LoadedWorld.SpriteTextureAtlas.Texture);
-      if (this.effect == null || this.modelVertices == null || this.modelIndices == null)
-        return;
-      this.InitializeGraphicsBuffers();
-      GraphicsDevice graphicsDevice = Engine.GraphicsDevice;
-      graphicsDevice.VertexDeclaration = this.vertexDeclaration;
-      graphicsDevice.Vertices[0].SetSource((VertexBuffer) ItemWithModel.modelVB, 0, VertexPositionNormalTexture.SizeInBytes);
-      graphicsDevice.Indices = (IndexBuffer) ItemWithModel.modelIB;
-      graphicsDevice.RenderState.CullMode = CullMode.CullCounterClockwiseFace;
-      graphicsDevice.RenderState.DepthBufferEnable = true;
-      graphicsDevice.RenderState.DepthBufferWriteEnable = true;
-      graphicsDevice.RenderState.AlphaBlendEnable = false;
-      graphicsDevice.RenderState.DepthBufferFunction = CompareFunction.LessEqual;
-      this.effect.Begin();
-      this.effect.CurrentTechnique.Passes[0].Begin();
-      graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, this.modelVertices.Length, 0, this.modelIndices.Length / 3);
-      this.effect.CurrentTechnique.Passes[0].End();
-      this.effect.End();
+        if (this.modelVertices == null || this.modelIndices == null)
+            this.CreateModel(this.SpriteCoordsRect, this.SpriteCoordsUV, Engine.LoadedWorld.SpriteTextureAtlas.Texture);
+        if (this.effect == null || this.modelVertices == null || this.modelIndices == null)
+            return;
+        this.InitializeGraphicsBuffers();
+        GraphicsDevice graphicsDevice = Engine.GraphicsDevice;
+
+        graphicsDevice.SetVertexBuffer(ItemWithModel.modelVB);
+        graphicsDevice.Indices = ItemWithModel.modelIB;
+
+        graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+        graphicsDevice.DepthStencilState = DepthStencilState.Default;
+        graphicsDevice.BlendState = BlendState.Opaque;
+
+        foreach (EffectPass pass in this.effect.CurrentTechnique.Passes)
+        {
+            pass.Apply();
+            graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, this.modelVertices.Length, 0, this.modelIndices.Length / 3);
+        }
     }
-  }
+    }
 }

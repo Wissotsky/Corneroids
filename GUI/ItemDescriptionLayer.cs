@@ -33,7 +33,7 @@ namespace CornerSpace.GUI
       this.item.GetStatistics(this.textLines, false);
       Point rectangleSize = this.GetRectangleSize(this.textLines);
       this.Size = new Vector2((float) rectangleSize.X, (float) rectangleSize.Y);
-      Engine.SpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
+      Engine.SpriteBatch.Begin(SpriteSortMode.Immediate,BlendState.AlphaBlend);
       for (int index = 0; index < this.textLines.Count; ++index)
         Engine.SpriteBatch.DrawString(Engine.Font, this.textLines[index] ?? string.Empty, new Vector2((float) this.Location.X, (float) (this.Location.Y + index * rectangleSize.Y / this.textLines.Count)), Color.White);
       Engine.SpriteBatch.End();

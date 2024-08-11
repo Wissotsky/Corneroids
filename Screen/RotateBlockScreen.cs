@@ -55,18 +55,15 @@ namespace CornerSpace.Screen
     {
       if (this.block != null && this.user != null && this.mouseOnButton.HasValue && this.rotationEffect != null)
       {
-        this.rotationEffect.Parameters["World"].SetValue(this.mouseOnButton.Value * (this.ownerEntity != null ? Matrix.CreateFromQuaternion(this.ownerEntity.Orientation) : Matrix.Identity) * Matrix.CreateTranslation(this.blockPosition));
-        this.rotationEffect.Parameters["View"].SetValue(this.user.UsedCamera.ViewMatrix);
-        this.rotationEffect.Parameters["Projection"].SetValue(this.user.UsedCamera.ProjectionMatrix);
-        Engine.GraphicsDevice.VertexDeclaration = this.vertexDeclaration;
-        Engine.GraphicsDevice.RenderState.CullMode = CullMode.None;
-        Engine.GraphicsDevice.RenderState.AlphaBlendEnable = true;
-        Engine.GraphicsDevice.RenderState.DepthBufferEnable = true;
-        this.rotationEffect.Begin();
-        this.rotationEffect.CurrentTechnique.Passes[0].Begin();
-        Engine.GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionTexture>(PrimitiveType.TriangleList, this.rotationVertices, 0, this.rotationVertices.Length, this.rotationIndices, 0, this.rotationIndices.Length / 3);
-        this.rotationEffect.CurrentTechnique.Passes[0].End();
-        this.rotationEffect.End();
+      this.rotationEffect.Parameters["World"].SetValue(this.mouseOnButton.Value * (this.ownerEntity != null ? Matrix.CreateFromQuaternion(this.ownerEntity.Orientation) : Matrix.Identity) * Matrix.CreateTranslation(this.blockPosition));
+      this.rotationEffect.Parameters["View"].SetValue(this.user.UsedCamera.ViewMatrix);
+      this.rotationEffect.Parameters["Projection"].SetValue(this.user.UsedCamera.ProjectionMatrix);
+      //Engine.GraphicsDevice.VertexDeclaration = this.vertexDeclaration;
+      Engine.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
+      Engine.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+      Engine.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+      this.rotationEffect.CurrentTechnique.Passes[0].Apply();
+      Engine.GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionTexture>(PrimitiveType.TriangleList, this.rotationVertices, 0, this.rotationVertices.Length, this.rotationIndices, 0, this.rotationIndices.Length / 3);
       }
       this.blockLayer.Render();
     }

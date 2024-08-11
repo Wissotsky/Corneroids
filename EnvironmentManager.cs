@@ -258,7 +258,7 @@ namespace CornerSpace
       if (markers == null || camera == null)
         return;
       Vector2 vector2 = 0.5f * new Vector2((float) -this.targetTexture.Width, (float) -this.targetTexture.Height);
-      Engine.SpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
+      Engine.SpriteBatch.Begin(SpriteSortMode.Immediate,BlendState.AlphaBlend);
       Engine.SetPointSamplerStateForSpritebatch();
       foreach (T marker in markers)
       {

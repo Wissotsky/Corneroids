@@ -92,24 +92,24 @@ namespace CornerSpace.Networking
         byte[] bytes = Gzip.Instance.Decompress(bytesToDecompress1, unzippedByteCount);
         byte[] data1 = Gzip.Instance.Decompress(bytesToDecompress3, width2 * height2 * 4);
         byte[] data2 = Gzip.Instance.Decompress(bytesToDecompress2, width1 * height1 * 4);
-        byte[] data3 = (byte[]) null;
+        byte[] data3 = (byte[])null;
         if (numberOfBytes4 > 0)
           data3 = Gzip.Instance.Decompress(bytesToDecompress4, width2 * height2 * 4);
         this.itemset = new Itemset();
         if (!this.itemset.ParseFromXml(XDocument.Parse(Encoding.UTF8.GetString(bytes))))
           throw new Exception("The itemset could not be parsed.");
-        texture = new Texture2D(Engine.GraphicsDevice, width1, height1, 1, TextureUsage.AutoGenerateMipMap, SurfaceFormat.Color);
-        blockTexture = new Texture2D(Engine.GraphicsDevice, width2, height2, 0, TextureUsage.AutoGenerateMipMap, SurfaceFormat.Color);
-        texture.SetData<byte>(data2);
-        blockTexture.SetData<byte>(data1);
+        texture = new Texture2D(Engine.GraphicsDevice, width1, height1, false, SurfaceFormat.Color);
+        blockTexture = new Texture2D(Engine.GraphicsDevice, width2, height2, false, SurfaceFormat.Color);
+        texture.SetData(data2);
+        blockTexture.SetData(data1);
         for (int index = 0; index < data3.Length; ++index)
         {
-          int num = (int) data3[index];
+          int num = (int)data3[index];
         }
         if (data3 != null)
         {
           lightTexture = new Texture2D(Engine.GraphicsDevice, width2, height2);
-          lightTexture.SetData<byte>(data3);
+          lightTexture.SetData(data3);
         }
         this.blockTextureAtlas = new BlockTextureAtlas(blockTexture, lightTexture, textureUnitSizePixels2);
         this.spriteTextureAtlas = new SpriteTextureAtlas(texture, textureUnitSizePixels1);

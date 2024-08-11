@@ -39,7 +39,7 @@ namespace CornerSpace.Screen
       this.camera.Dispose();
       this.dustManager.Dispose();
       this.spaceModel.Dispose();
-      Engine.SettingsManager.ResolutionChangedEvent -= new Action<Point>(((MenuScreen) this).ResolutionChanged);
+      Engine.SettingsManager.ResolutionChangedEvent -= new Action<Point>(ResolutionChanged);
     }
 
     public override void Load()
@@ -51,7 +51,7 @@ namespace CornerSpace.Screen
       this.dustManager.InitializeDust(512);
       this.camera.Position = new Position3(Vector3.One * 128f);
       this.CreateLayers();
-      Engine.SettingsManager.ResolutionChangedEvent += new Action<Point>(((MenuScreen) this).ResolutionChanged);
+      Engine.SettingsManager.ResolutionChangedEvent += new Action<Point>(ResolutionChanged);
     }
 
     public override void Render()

@@ -15,14 +15,13 @@ namespace CornerSpace
     private int vertexCount;
 
     public VertexBufferObj(
-      GraphicsDevice device,
+      GraphicsDevice graphicsDevice,
+      VertexDeclaration vertexDeclaration,
       int vertexCount,
-      int vertexStride,
-      VertexDeclaration declaration,
-      BufferUsage usage)
-      : base(device, vertexCount * vertexStride, usage)
+      BufferUsage bufferUsage)
+      : base(graphicsDevice, vertexDeclaration, vertexCount, bufferUsage)
     {
-      this.declaration = declaration;
+      this.declaration = vertexDeclaration;
       this.vertexCount = vertexCount;
     }
 

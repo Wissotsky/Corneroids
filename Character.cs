@@ -163,26 +163,25 @@ namespace CornerSpace
       ILightingInterface lightingInterface)
     {
       if (this.model == null || camera == null || camera == this)
-        return;
-      Engine.GraphicsDevice.RenderState.DepthBufferEnable = true;
-      Engine.GraphicsDevice.RenderState.DepthBufferFunction = CompareFunction.LessEqual;
-      Engine.GraphicsDevice.RenderState.CullMode = CullMode.CullCounterClockwiseFace;
-      Engine.GraphicsDevice.RenderState.AlphaBlendEnable = false;
-      this.effect.Parameters["Texture"].SetValue((Texture) this.texture);
+      return;
+      Engine.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+      Engine.GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+      Engine.GraphicsDevice.BlendState = BlendState.Opaque;
+      this.effect.Parameters["Texture"].SetValue((Texture2D) this.texture);
       Matrix modelMatrix = this.CreateModelMatrix(camera);
       foreach (ModelMesh mesh in this.model.Meshes)
       {
-        Microsoft.Xna.Framework.BoundingSphere sphere = new Microsoft.Xna.Framework.BoundingSphere(camera.GetPositionRelativeToCamera(this.Position), this.radius * 2f);
-        if (camera.ViewFrustum.Contains(sphere) != ContainmentType.Disjoint)
+      BoundingSphere sphere = new BoundingSphere(camera.GetPositionRelativeToCamera(this.Position), this.radius * 2f);
+      if (camera.ViewFrustum.Contains(sphere) != ContainmentType.Disjoint)
+      {
+        foreach (BasicEffect effect in mesh.Effects)
         {
-          foreach (Effect effect in mesh.Effects)
-          {
-            effect.Parameters["World"].SetValue(modelMatrix);
-            effect.Parameters["View"].SetValue(camera.ViewMatrix);
-            effect.Parameters["Projection"].SetValue(camera.ProjectionMatrix);
-          }
-          mesh.Draw();
+        effect.World = modelMatrix;
+        effect.View = camera.ViewMatrix;
+        effect.Projection = camera.ProjectionMatrix;
         }
+        mesh.Draw();
+      }
       }
     }
 

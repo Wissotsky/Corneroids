@@ -237,7 +237,7 @@ namespace CornerSpace
       if (buffs == null || buffs.Count <= 0)
         return;
       SpriteBatch spriteBatch = Engine.SpriteBatch;
-      spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
+      spriteBatch.Begin(SpriteSortMode.Immediate,BlendState.AlphaBlend);
       Engine.SetPointSamplerStateForSpritebatch();
       for (int index = 0; index < buffs.Count; ++index)
       {
@@ -253,11 +253,8 @@ namespace CornerSpace
     private void DrawBoardedSprite()
     {
       SpriteBatch spriteBatch = Engine.SpriteBatch;
-      spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
-      Engine.GraphicsDevice.SamplerStates[0].MinFilter = TextureFilter.Point;
-      Engine.GraphicsDevice.SamplerStates[0].MipFilter = TextureFilter.Point;
-      Engine.GraphicsDevice.SamplerStates[0].MagFilter = TextureFilter.Point;
-      Rectangle destinationRectangle = new Rectangle(this.Toolbar.Location.X + (int) this.Toolbar.Size.X + 30, this.Toolbar.Location.Y, 64, 64);
+      spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, null, null);
+      Rectangle destinationRectangle = new Rectangle(this.Toolbar.Location.X + (int)this.Toolbar.Size.X + 30, this.Toolbar.Location.Y, 64, 64);
       spriteBatch.Draw(this.boardedTexture, destinationRectangle, Color.White);
       spriteBatch.End();
     }
@@ -324,10 +321,7 @@ namespace CornerSpace
     {
       if (!left && !right && !up && !down)
         return;
-      Engine.SpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
-      Engine.GraphicsDevice.SamplerStates[0].MipFilter = TextureFilter.Point;
-      Engine.GraphicsDevice.SamplerStates[0].MinFilter = TextureFilter.Point;
-      Engine.GraphicsDevice.SamplerStates[0].MagFilter = TextureFilter.Point;
+      Engine.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, null, null);
       Point point = new Point(Engine.GraphicsDevice.PresentationParameters.BackBufferWidth / 2, Engine.GraphicsDevice.PresentationParameters.BackBufferHeight / 2);
       if (left)
       {

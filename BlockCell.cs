@@ -77,12 +77,9 @@ namespace CornerSpace
       byte visible,
       byte nonvisible)
     {
-      byte visibility = this.Data.Visibility;
-      if (visible != (byte) 0)
-        this.Data.Visibility |= visible;
-      else
-        this.Data.Visibility &= ~nonvisible;
-      return (int) visibility != (int) this.Data.Visibility;
+        byte visibility = this.Data.Visibility;
+        this.Data.Visibility = visible != (byte)0 ? (byte)(this.Data.Visibility | visible) : (byte)(this.Data.Visibility & ~nonvisible);
+        return visibility != this.Data.Visibility;
     }
 
     public Block Block => this.Data;

@@ -5,6 +5,7 @@
 // Assembly location: C:\Users\Wissotsky\Desktop\camcompute\Corneroids\Corneroids.exe
 
 using CornerSpace.Utility;
+using System.Data.SQLite;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -371,11 +372,11 @@ namespace CornerSpace
     {
       lock (this.databaseLock)
       {
-        SQLiteTransaction sqLiteTransaction = (SQLiteTransaction) null;
+        SQLiteTransaction SQLiteTransaction = (SQLiteTransaction) null;
         try
         {
           this.dbConnection.Open();
-          sqLiteTransaction = this.dbConnection.BeginTransaction();
+          SQLiteTransaction = this.dbConnection.BeginTransaction();
           using (SQLiteCommand command = this.dbConnection.CreateCommand())
           {
             command.CommandText = query;
@@ -386,7 +387,7 @@ namespace CornerSpace
             }
             command.ExecuteNonQuery();
           }
-          sqLiteTransaction.Commit();
+          SQLiteTransaction.Commit();
           return true;
         }
         catch (Exception ex)
@@ -394,7 +395,7 @@ namespace CornerSpace
           Engine.Console.WriteErrorLine("NonQuery failed. Attempting a rollback: " + ex.Message);
           try
           {
-            sqLiteTransaction.Rollback();
+            SQLiteTransaction.Rollback();
           }
           catch
           {
@@ -404,7 +405,7 @@ namespace CornerSpace
         }
         finally
         {
-          sqLiteTransaction?.Dispose();
+          SQLiteTransaction?.Dispose();
           this.dbConnection.Close();
         }
       }
@@ -416,19 +417,19 @@ namespace CornerSpace
       {
         try
         {
-          using (SQLiteDataAdapter sqLiteDataAdapter = new SQLiteDataAdapter())
+          using (SQLiteDataAdapter SQLiteDataAdapter = new SQLiteDataAdapter())
           {
-            using (SQLiteCommand sqLiteCommand = new SQLiteCommand(this.dbConnection))
+            using (SQLiteCommand SQLiteCommand = new SQLiteCommand(this.dbConnection))
             {
               DataTable dataTable = new DataTable();
-              sqLiteCommand.CommandText = query;
+              SQLiteCommand.CommandText = query;
               if (parameters != null)
               {
                 for (int index = 0; index < parameters.Length; ++index)
-                  sqLiteCommand.Parameters.Add(parameters[index]);
+                  SQLiteCommand.Parameters.Add(parameters[index]);
               }
-              sqLiteDataAdapter.SelectCommand = sqLiteCommand;
-              sqLiteDataAdapter.Fill(dataTable);
+              SQLiteDataAdapter.SelectCommand = SQLiteCommand;
+              SQLiteDataAdapter.Fill(dataTable);
               return dataTable;
             }
           }
@@ -478,17 +479,17 @@ namespace CornerSpace
     {
       if (containersOfEntities == null)
         return;
-      SQLiteParameter[] sqLiteParameterArray1 = new SQLiteParameter[2]
+      SQLiteParameter[] SQLiteParameterArray1 = new SQLiteParameter[2]
       {
         new SQLiteParameter("id", DbType.Int32),
         null
       };
-      SQLiteParameter[] sqLiteParameterArray2 = sqLiteParameterArray1;
-      SQLiteParameter sqLiteParameter1 = new SQLiteParameter("type", DbType.Int32);
-      sqLiteParameter1.Value = (object) 1;
-      SQLiteParameter sqLiteParameter2 = sqLiteParameter1;
-      sqLiteParameterArray2[1] = sqLiteParameter2;
-      SQLiteParameter[] parameters = sqLiteParameterArray1;
+      SQLiteParameter[] SQLiteParameterArray2 = SQLiteParameterArray1;
+      SQLiteParameter SQLiteParameter1 = new SQLiteParameter("type", DbType.Int32);
+      SQLiteParameter1.Value = (object) 1;
+      SQLiteParameter SQLiteParameter2 = SQLiteParameter1;
+      SQLiteParameterArray2[1] = SQLiteParameter2;
+      SQLiteParameter[] parameters = SQLiteParameterArray1;
       foreach (WorldDataStorageInterface.StoreEntityContainer containersOfEntity in containersOfEntities)
       {
         SpaceEntity entity = containersOfEntity.Entity;
@@ -516,7 +517,7 @@ namespace CornerSpace
         try
         {
           this.dbConnection.Open();
-          using (SQLiteTransaction sqLiteTransaction = this.dbConnection.BeginTransaction())
+          using (SQLiteTransaction SQLiteTransaction = this.dbConnection.BeginTransaction())
           {
             using (SQLiteCommand command = this.dbConnection.CreateCommand())
             {
@@ -621,7 +622,7 @@ namespace CornerSpace
                 }
               }
             }
-            sqLiteTransaction.Commit();
+            SQLiteTransaction.Commit();
           }
         }
         catch (Exception ex)
@@ -693,11 +694,11 @@ namespace CornerSpace
         return;
       lock (this.databaseLock)
       {
-        SQLiteTransaction sqLiteTransaction = (SQLiteTransaction) null;
+        SQLiteTransaction SQLiteTransaction = (SQLiteTransaction) null;
         try
         {
           this.dbConnection.Open();
-          sqLiteTransaction = this.dbConnection.BeginTransaction();
+          SQLiteTransaction = this.dbConnection.BeginTransaction();
           using (SQLiteCommand command = this.dbConnection.CreateCommand())
           {
             command.CommandText = "INSERT OR REPLACE INTO spacesectors VALUES (@x, @y, @z, @state);";
@@ -721,14 +722,14 @@ namespace CornerSpace
               command.ExecuteNonQuery();
             }
           }
-          sqLiteTransaction.Commit();
+          SQLiteTransaction.Commit();
         }
         catch (Exception ex)
         {
           Engine.Console.WriteErrorLine("NonQuery failed. Attempting a rollback: " + ex.Message);
           try
           {
-            sqLiteTransaction.Rollback();
+            SQLiteTransaction.Rollback();
           }
           catch
           {
@@ -737,7 +738,7 @@ namespace CornerSpace
         }
         finally
         {
-          sqLiteTransaction?.Dispose();
+          SQLiteTransaction?.Dispose();
           this.dbConnection.Close();
         }
       }
@@ -751,36 +752,36 @@ namespace CornerSpace
       Vector3int upperSpaceBounds = inputParam.UpperSpaceBounds;
       Action<SpaceEntity> resultFunction = inputParam.ResultFunction;
       SQLiteParameter[] parameters1 = new SQLiteParameter[6];
-      SQLiteParameter[] sqLiteParameterArray1 = parameters1;
-      SQLiteParameter sqLiteParameter1 = new SQLiteParameter("lx", DbType.Int32);
-      sqLiteParameter1.Value = (object) lowerSpaceBounds.X;
-      SQLiteParameter sqLiteParameter2 = sqLiteParameter1;
-      sqLiteParameterArray1[0] = sqLiteParameter2;
-      SQLiteParameter[] sqLiteParameterArray2 = parameters1;
-      SQLiteParameter sqLiteParameter3 = new SQLiteParameter("ux", DbType.Int32);
-      sqLiteParameter3.Value = (object) upperSpaceBounds.X;
-      SQLiteParameter sqLiteParameter4 = sqLiteParameter3;
-      sqLiteParameterArray2[1] = sqLiteParameter4;
-      SQLiteParameter[] sqLiteParameterArray3 = parameters1;
-      SQLiteParameter sqLiteParameter5 = new SQLiteParameter("ly", DbType.Int32);
-      sqLiteParameter5.Value = (object) lowerSpaceBounds.Y;
-      SQLiteParameter sqLiteParameter6 = sqLiteParameter5;
-      sqLiteParameterArray3[2] = sqLiteParameter6;
-      SQLiteParameter[] sqLiteParameterArray4 = parameters1;
-      SQLiteParameter sqLiteParameter7 = new SQLiteParameter("uy", DbType.Int32);
-      sqLiteParameter7.Value = (object) upperSpaceBounds.Y;
-      SQLiteParameter sqLiteParameter8 = sqLiteParameter7;
-      sqLiteParameterArray4[3] = sqLiteParameter8;
-      SQLiteParameter[] sqLiteParameterArray5 = parameters1;
-      SQLiteParameter sqLiteParameter9 = new SQLiteParameter("lz", DbType.Int32);
-      sqLiteParameter9.Value = (object) lowerSpaceBounds.Z;
-      SQLiteParameter sqLiteParameter10 = sqLiteParameter9;
-      sqLiteParameterArray5[4] = sqLiteParameter10;
-      SQLiteParameter[] sqLiteParameterArray6 = parameters1;
-      SQLiteParameter sqLiteParameter11 = new SQLiteParameter("uz", DbType.Int32);
-      sqLiteParameter11.Value = (object) upperSpaceBounds.Z;
-      SQLiteParameter sqLiteParameter12 = sqLiteParameter11;
-      sqLiteParameterArray6[5] = sqLiteParameter12;
+      SQLiteParameter[] SQLiteParameterArray1 = parameters1;
+      SQLiteParameter SQLiteParameter1 = new SQLiteParameter("lx", DbType.Int32);
+      SQLiteParameter1.Value = (object) lowerSpaceBounds.X;
+      SQLiteParameter SQLiteParameter2 = SQLiteParameter1;
+      SQLiteParameterArray1[0] = SQLiteParameter2;
+      SQLiteParameter[] SQLiteParameterArray2 = parameters1;
+      SQLiteParameter SQLiteParameter3 = new SQLiteParameter("ux", DbType.Int32);
+      SQLiteParameter3.Value = (object) upperSpaceBounds.X;
+      SQLiteParameter SQLiteParameter4 = SQLiteParameter3;
+      SQLiteParameterArray2[1] = SQLiteParameter4;
+      SQLiteParameter[] SQLiteParameterArray3 = parameters1;
+      SQLiteParameter SQLiteParameter5 = new SQLiteParameter("ly", DbType.Int32);
+      SQLiteParameter5.Value = (object) lowerSpaceBounds.Y;
+      SQLiteParameter SQLiteParameter6 = SQLiteParameter5;
+      SQLiteParameterArray3[2] = SQLiteParameter6;
+      SQLiteParameter[] SQLiteParameterArray4 = parameters1;
+      SQLiteParameter SQLiteParameter7 = new SQLiteParameter("uy", DbType.Int32);
+      SQLiteParameter7.Value = (object) upperSpaceBounds.Y;
+      SQLiteParameter SQLiteParameter8 = SQLiteParameter7;
+      SQLiteParameterArray4[3] = SQLiteParameter8;
+      SQLiteParameter[] SQLiteParameterArray5 = parameters1;
+      SQLiteParameter SQLiteParameter9 = new SQLiteParameter("lz", DbType.Int32);
+      SQLiteParameter9.Value = (object) lowerSpaceBounds.Z;
+      SQLiteParameter SQLiteParameter10 = SQLiteParameter9;
+      SQLiteParameterArray5[4] = SQLiteParameter10;
+      SQLiteParameter[] SQLiteParameterArray6 = parameters1;
+      SQLiteParameter SQLiteParameter11 = new SQLiteParameter("uz", DbType.Int32);
+      SQLiteParameter11.Value = (object) upperSpaceBounds.Z;
+      SQLiteParameter SQLiteParameter12 = SQLiteParameter11;
+      SQLiteParameterArray6[5] = SQLiteParameter12;
       SQLiteParameter[] parameters2 = new SQLiteParameter[1]
       {
         new SQLiteParameter("id", DbType.Int32)
@@ -902,11 +903,11 @@ namespace CornerSpace
         return;
       lock (this.databaseLock)
       {
-        SQLiteTransaction sqLiteTransaction = (SQLiteTransaction) null;
+        SQLiteTransaction SQLiteTransaction = (SQLiteTransaction) null;
         try
         {
           this.dbConnection.Open();
-          sqLiteTransaction = this.dbConnection.BeginTransaction();
+          SQLiteTransaction = this.dbConnection.BeginTransaction();
           using (SQLiteCommand command = this.dbConnection.CreateCommand())
           {
             command.CommandText = "INSERT INTO beacons VALUES (@x, @y, @z, @msg);";
@@ -930,7 +931,7 @@ namespace CornerSpace
               values[3].Value = (object) z;
               command.ExecuteNonQuery();
             }
-            sqLiteTransaction.Commit();
+            SQLiteTransaction.Commit();
           }
         }
         catch (Exception ex)
@@ -939,7 +940,7 @@ namespace CornerSpace
         }
         finally
         {
-          sqLiteTransaction?.Dispose();
+          SQLiteTransaction?.Dispose();
           this.dbConnection.Close();
         }
       }
@@ -983,13 +984,13 @@ namespace CornerSpace
       if (entity == null)
         return;
       int id = entity.Id;
-      SQLiteParameter[] sqLiteParameterArray1 = new SQLiteParameter[1];
-      SQLiteParameter[] sqLiteParameterArray2 = sqLiteParameterArray1;
-      SQLiteParameter sqLiteParameter1 = new SQLiteParameter("ownerId", DbType.Int32);
-      sqLiteParameter1.Value = (object) id;
-      SQLiteParameter sqLiteParameter2 = sqLiteParameter1;
-      sqLiteParameterArray2[0] = sqLiteParameter2;
-      SQLiteParameter[] parameters = sqLiteParameterArray1;
+      SQLiteParameter[] SQLiteParameterArray1 = new SQLiteParameter[1];
+      SQLiteParameter[] SQLiteParameterArray2 = SQLiteParameterArray1;
+      SQLiteParameter SQLiteParameter1 = new SQLiteParameter("ownerId", DbType.Int32);
+      SQLiteParameter1.Value = (object) id;
+      SQLiteParameter SQLiteParameter2 = SQLiteParameter1;
+      SQLiteParameterArray2[0] = SQLiteParameter2;
+      SQLiteParameter[] parameters = SQLiteParameterArray1;
       try
       {
         Dictionary<int, ControlBlock> dictionary = new Dictionary<int, ControlBlock>();
@@ -1107,16 +1108,16 @@ namespace CornerSpace
       DatabaseStructure.InventoryId type)
     {
       SQLiteParameter[] parameters = new SQLiteParameter[2];
-      SQLiteParameter[] sqLiteParameterArray1 = parameters;
-      SQLiteParameter sqLiteParameter1 = new SQLiteParameter(nameof (id), DbType.Int32);
-      sqLiteParameter1.Value = (object) id;
-      SQLiteParameter sqLiteParameter2 = sqLiteParameter1;
-      sqLiteParameterArray1[0] = sqLiteParameter2;
-      SQLiteParameter[] sqLiteParameterArray2 = parameters;
-      SQLiteParameter sqLiteParameter3 = new SQLiteParameter(nameof (type), DbType.Int32);
-      sqLiteParameter3.Value = (object) (int) type;
-      SQLiteParameter sqLiteParameter4 = sqLiteParameter3;
-      sqLiteParameterArray2[1] = sqLiteParameter4;
+      SQLiteParameter[] SQLiteParameterArray1 = parameters;
+      SQLiteParameter SQLiteParameter1 = new SQLiteParameter(nameof (id), DbType.Int32);
+      SQLiteParameter1.Value = (object) id;
+      SQLiteParameter SQLiteParameter2 = SQLiteParameter1;
+      SQLiteParameterArray1[0] = SQLiteParameter2;
+      SQLiteParameter[] SQLiteParameterArray2 = parameters;
+      SQLiteParameter SQLiteParameter3 = new SQLiteParameter(nameof (type), DbType.Int32);
+      SQLiteParameter3.Value = (object) (int) type;
+      SQLiteParameter SQLiteParameter4 = SQLiteParameter3;
+      SQLiteParameterArray2[1] = SQLiteParameter4;
       using (DataTable dataTable = this.ExecuteQuery("SELECT * FROM inventoryItems WHERE id = @id AND type = @type;", parameters))
       {
         if (dataTable != null)
@@ -1157,11 +1158,11 @@ namespace CornerSpace
       if (container == null)
         return;
       SQLiteParameter[] parameters = new SQLiteParameter[1];
-      SQLiteParameter[] sqLiteParameterArray = parameters;
-      SQLiteParameter sqLiteParameter1 = new SQLiteParameter("id", DbType.Int32);
-      sqLiteParameter1.Value = (object) playerId;
-      SQLiteParameter sqLiteParameter2 = sqLiteParameter1;
-      sqLiteParameterArray[0] = sqLiteParameter2;
+      SQLiteParameter[] SQLiteParameterArray = parameters;
+      SQLiteParameter SQLiteParameter1 = new SQLiteParameter("id", DbType.Int32);
+      SQLiteParameter1.Value = (object) playerId;
+      SQLiteParameter SQLiteParameter2 = SQLiteParameter1;
+      SQLiteParameterArray[0] = SQLiteParameter2;
       using (DataTable dataTable = this.ExecuteQuery("SELECT * FROM players WHERE id = @id;", parameters))
       {
         try
@@ -1245,12 +1246,12 @@ namespace CornerSpace
         return;
       lock (this.databaseLock)
       {
-        SQLiteTransaction sqLiteTransaction = (SQLiteTransaction) null;
+        SQLiteTransaction SQLiteTransaction = (SQLiteTransaction) null;
         try
         {
           SQLiteParameter parameter = new SQLiteParameter("id", DbType.Int32);
           this.dbConnection.Open();
-          sqLiteTransaction = this.dbConnection.BeginTransaction();
+          SQLiteTransaction = this.dbConnection.BeginTransaction();
           using (SQLiteCommand command = this.dbConnection.CreateCommand())
           {
             for (int index1 = 0; index1 < entitiesToStore.Length; ++index1)
@@ -1292,7 +1293,7 @@ namespace CornerSpace
               }
             }
           }
-          sqLiteTransaction.Commit();
+          SQLiteTransaction.Commit();
         }
         catch (Exception ex)
         {
@@ -1300,7 +1301,7 @@ namespace CornerSpace
         }
         finally
         {
-          sqLiteTransaction?.Dispose();
+          SQLiteTransaction?.Dispose();
           this.dbConnection.Close();
         }
       }
@@ -1311,11 +1312,11 @@ namespace CornerSpace
     {
       lock (this.databaseLock)
       {
-        SQLiteTransaction sqLiteTransaction = (SQLiteTransaction) null;
+        SQLiteTransaction SQLiteTransaction = (SQLiteTransaction) null;
         try
         {
           this.dbConnection.Open();
-          sqLiteTransaction = this.dbConnection.BeginTransaction();
+          SQLiteTransaction = this.dbConnection.BeginTransaction();
           using (SQLiteCommand command = this.dbConnection.CreateCommand())
           {
             command.CommandText = "INSERT OR REPLACE INTO entities VALUES (@id, @loaded, @x, @y, @z, @ox, @oy, @oz, @ow, @sx, @sy, @sz);";
@@ -1356,7 +1357,7 @@ namespace CornerSpace
               values[11].Value = (object) false;
               command.ExecuteNonQuery();
             }
-            sqLiteTransaction.Commit();
+            SQLiteTransaction.Commit();
           }
         }
         catch (Exception ex)
@@ -1365,7 +1366,7 @@ namespace CornerSpace
         }
         finally
         {
-          sqLiteTransaction?.Dispose();
+          SQLiteTransaction?.Dispose();
           this.dbConnection.Close();
         }
       }
@@ -1391,66 +1392,66 @@ namespace CornerSpace
         numArray[index * 4 + 3] = (byte) (num >> 24 & (int) byte.MaxValue);
       }
       SQLiteParameter[] parameters = new SQLiteParameter[12];
-      SQLiteParameter[] sqLiteParameterArray1 = parameters;
-      SQLiteParameter sqLiteParameter1 = new SQLiteParameter("id", DbType.Int32);
-      sqLiteParameter1.Value = (object) id;
-      SQLiteParameter sqLiteParameter2 = sqLiteParameter1;
-      sqLiteParameterArray1[0] = sqLiteParameter2;
-      SQLiteParameter[] sqLiteParameterArray2 = parameters;
-      SQLiteParameter sqLiteParameter3 = new SQLiteParameter("name", DbType.String);
-      sqLiteParameter3.Value = (object) name;
-      SQLiteParameter sqLiteParameter4 = sqLiteParameter3;
-      sqLiteParameterArray2[1] = sqLiteParameter4;
-      SQLiteParameter[] sqLiteParameterArray3 = parameters;
-      SQLiteParameter sqLiteParameter5 = new SQLiteParameter("x", DbType.Int64);
-      sqLiteParameter5.Value = (object) position.X;
-      SQLiteParameter sqLiteParameter6 = sqLiteParameter5;
-      sqLiteParameterArray3[2] = sqLiteParameter6;
-      SQLiteParameter[] sqLiteParameterArray4 = parameters;
-      SQLiteParameter sqLiteParameter7 = new SQLiteParameter("y", DbType.Int64);
-      sqLiteParameter7.Value = (object) position.Y;
-      SQLiteParameter sqLiteParameter8 = sqLiteParameter7;
-      sqLiteParameterArray4[3] = sqLiteParameter8;
-      SQLiteParameter[] sqLiteParameterArray5 = parameters;
-      SQLiteParameter sqLiteParameter9 = new SQLiteParameter("z", DbType.Int64);
-      sqLiteParameter9.Value = (object) position.Z;
-      SQLiteParameter sqLiteParameter10 = sqLiteParameter9;
-      sqLiteParameterArray5[4] = sqLiteParameter10;
-      SQLiteParameter[] sqLiteParameterArray6 = parameters;
-      SQLiteParameter sqLiteParameter11 = new SQLiteParameter("ox", DbType.Single);
-      sqLiteParameter11.Value = (object) orientation.X;
-      SQLiteParameter sqLiteParameter12 = sqLiteParameter11;
-      sqLiteParameterArray6[5] = sqLiteParameter12;
-      SQLiteParameter[] sqLiteParameterArray7 = parameters;
-      SQLiteParameter sqLiteParameter13 = new SQLiteParameter("oy", DbType.Single);
-      sqLiteParameter13.Value = (object) orientation.Y;
-      SQLiteParameter sqLiteParameter14 = sqLiteParameter13;
-      sqLiteParameterArray7[6] = sqLiteParameter14;
-      SQLiteParameter[] sqLiteParameterArray8 = parameters;
-      SQLiteParameter sqLiteParameter15 = new SQLiteParameter("oz", DbType.Single);
-      sqLiteParameter15.Value = (object) orientation.Z;
-      SQLiteParameter sqLiteParameter16 = sqLiteParameter15;
-      sqLiteParameterArray8[7] = sqLiteParameter16;
-      SQLiteParameter[] sqLiteParameterArray9 = parameters;
-      SQLiteParameter sqLiteParameter17 = new SQLiteParameter("ow", DbType.Single);
-      sqLiteParameter17.Value = (object) orientation.W;
-      SQLiteParameter sqLiteParameter18 = sqLiteParameter17;
-      sqLiteParameterArray9[8] = sqLiteParameter18;
-      SQLiteParameter[] sqLiteParameterArray10 = parameters;
-      SQLiteParameter sqLiteParameter19 = new SQLiteParameter("entityId", DbType.Int32);
-      sqLiteParameter19.Value = (object) boardedEntityId;
-      SQLiteParameter sqLiteParameter20 = sqLiteParameter19;
-      sqLiteParameterArray10[9] = sqLiteParameter20;
-      SQLiteParameter[] sqLiteParameterArray11 = parameters;
-      SQLiteParameter sqLiteParameter21 = new SQLiteParameter("boundEntities", DbType.Binary);
-      sqLiteParameter21.Value = (object) numArray;
-      SQLiteParameter sqLiteParameter22 = sqLiteParameter21;
-      sqLiteParameterArray11[10] = sqLiteParameter22;
-      SQLiteParameter[] sqLiteParameterArray12 = parameters;
-      SQLiteParameter sqLiteParameter23 = new SQLiteParameter("token", DbType.String);
-      sqLiteParameter23.Value = (object) token;
-      SQLiteParameter sqLiteParameter24 = sqLiteParameter23;
-      sqLiteParameterArray12[11] = sqLiteParameter24;
+      SQLiteParameter[] SQLiteParameterArray1 = parameters;
+      SQLiteParameter SQLiteParameter1 = new SQLiteParameter("id", DbType.Int32);
+      SQLiteParameter1.Value = (object) id;
+      SQLiteParameter SQLiteParameter2 = SQLiteParameter1;
+      SQLiteParameterArray1[0] = SQLiteParameter2;
+      SQLiteParameter[] SQLiteParameterArray2 = parameters;
+      SQLiteParameter SQLiteParameter3 = new SQLiteParameter("name", DbType.String);
+      SQLiteParameter3.Value = (object) name;
+      SQLiteParameter SQLiteParameter4 = SQLiteParameter3;
+      SQLiteParameterArray2[1] = SQLiteParameter4;
+      SQLiteParameter[] SQLiteParameterArray3 = parameters;
+      SQLiteParameter SQLiteParameter5 = new SQLiteParameter("x", DbType.Int64);
+      SQLiteParameter5.Value = (object) position.X;
+      SQLiteParameter SQLiteParameter6 = SQLiteParameter5;
+      SQLiteParameterArray3[2] = SQLiteParameter6;
+      SQLiteParameter[] SQLiteParameterArray4 = parameters;
+      SQLiteParameter SQLiteParameter7 = new SQLiteParameter("y", DbType.Int64);
+      SQLiteParameter7.Value = (object) position.Y;
+      SQLiteParameter SQLiteParameter8 = SQLiteParameter7;
+      SQLiteParameterArray4[3] = SQLiteParameter8;
+      SQLiteParameter[] SQLiteParameterArray5 = parameters;
+      SQLiteParameter SQLiteParameter9 = new SQLiteParameter("z", DbType.Int64);
+      SQLiteParameter9.Value = (object) position.Z;
+      SQLiteParameter SQLiteParameter10 = SQLiteParameter9;
+      SQLiteParameterArray5[4] = SQLiteParameter10;
+      SQLiteParameter[] SQLiteParameterArray6 = parameters;
+      SQLiteParameter SQLiteParameter11 = new SQLiteParameter("ox", DbType.Single);
+      SQLiteParameter11.Value = (object) orientation.X;
+      SQLiteParameter SQLiteParameter12 = SQLiteParameter11;
+      SQLiteParameterArray6[5] = SQLiteParameter12;
+      SQLiteParameter[] SQLiteParameterArray7 = parameters;
+      SQLiteParameter SQLiteParameter13 = new SQLiteParameter("oy", DbType.Single);
+      SQLiteParameter13.Value = (object) orientation.Y;
+      SQLiteParameter SQLiteParameter14 = SQLiteParameter13;
+      SQLiteParameterArray7[6] = SQLiteParameter14;
+      SQLiteParameter[] SQLiteParameterArray8 = parameters;
+      SQLiteParameter SQLiteParameter15 = new SQLiteParameter("oz", DbType.Single);
+      SQLiteParameter15.Value = (object) orientation.Z;
+      SQLiteParameter SQLiteParameter16 = SQLiteParameter15;
+      SQLiteParameterArray8[7] = SQLiteParameter16;
+      SQLiteParameter[] SQLiteParameterArray9 = parameters;
+      SQLiteParameter SQLiteParameter17 = new SQLiteParameter("ow", DbType.Single);
+      SQLiteParameter17.Value = (object) orientation.W;
+      SQLiteParameter SQLiteParameter18 = SQLiteParameter17;
+      SQLiteParameterArray9[8] = SQLiteParameter18;
+      SQLiteParameter[] SQLiteParameterArray10 = parameters;
+      SQLiteParameter SQLiteParameter19 = new SQLiteParameter("entityId", DbType.Int32);
+      SQLiteParameter19.Value = (object) boardedEntityId;
+      SQLiteParameter SQLiteParameter20 = SQLiteParameter19;
+      SQLiteParameterArray10[9] = SQLiteParameter20;
+      SQLiteParameter[] SQLiteParameterArray11 = parameters;
+      SQLiteParameter SQLiteParameter21 = new SQLiteParameter("boundEntities", DbType.Binary);
+      SQLiteParameter21.Value = (object) numArray;
+      SQLiteParameter SQLiteParameter22 = SQLiteParameter21;
+      SQLiteParameterArray11[10] = SQLiteParameter22;
+      SQLiteParameter[] SQLiteParameterArray12 = parameters;
+      SQLiteParameter SQLiteParameter23 = new SQLiteParameter("token", DbType.String);
+      SQLiteParameter23.Value = (object) token;
+      SQLiteParameter SQLiteParameter24 = SQLiteParameter23;
+      SQLiteParameterArray12[11] = SQLiteParameter24;
       this.ExecuteNonQuery("INSERT OR REPLACE INTO players VALUES (@id, @name, @x, @y, @z, @ox, @oy, @oz, @ow, @entityId, @boundEntities, @token);", parameters);
     }
 
@@ -1463,36 +1464,36 @@ namespace CornerSpace
       if (itemData == null)
         return;
       SQLiteParameter[] parameters = new SQLiteParameter[6];
-      SQLiteParameter[] sqLiteParameterArray1 = parameters;
-      SQLiteParameter sqLiteParameter1 = new SQLiteParameter(nameof (id), DbType.Int32);
-      sqLiteParameter1.Value = (object) id;
-      SQLiteParameter sqLiteParameter2 = sqLiteParameter1;
-      sqLiteParameterArray1[0] = sqLiteParameter2;
-      SQLiteParameter[] sqLiteParameterArray2 = parameters;
-      SQLiteParameter sqLiteParameter3 = new SQLiteParameter(nameof (type), DbType.Int32);
-      sqLiteParameter3.Value = (object) (int) type;
-      SQLiteParameter sqLiteParameter4 = sqLiteParameter3;
-      sqLiteParameterArray2[1] = sqLiteParameter4;
-      SQLiteParameter[] sqLiteParameterArray3 = parameters;
-      SQLiteParameter sqLiteParameter5 = new SQLiteParameter("x", DbType.Single);
-      sqLiteParameter5.Value = (object) position.X;
-      SQLiteParameter sqLiteParameter6 = sqLiteParameter5;
-      sqLiteParameterArray3[2] = sqLiteParameter6;
-      SQLiteParameter[] sqLiteParameterArray4 = parameters;
-      SQLiteParameter sqLiteParameter7 = new SQLiteParameter("y", DbType.Single);
-      sqLiteParameter7.Value = (object) position.Y;
-      SQLiteParameter sqLiteParameter8 = sqLiteParameter7;
-      sqLiteParameterArray4[3] = sqLiteParameter8;
-      SQLiteParameter[] sqLiteParameterArray5 = parameters;
-      SQLiteParameter sqLiteParameter9 = new SQLiteParameter("z", DbType.Single);
-      sqLiteParameter9.Value = (object) position.Z;
-      SQLiteParameter sqLiteParameter10 = sqLiteParameter9;
-      sqLiteParameterArray5[4] = sqLiteParameter10;
-      SQLiteParameter[] sqLiteParameterArray6 = parameters;
-      SQLiteParameter sqLiteParameter11 = new SQLiteParameter("items", DbType.Binary);
-      sqLiteParameter11.Value = (object) itemData;
-      SQLiteParameter sqLiteParameter12 = sqLiteParameter11;
-      sqLiteParameterArray6[5] = sqLiteParameter12;
+      SQLiteParameter[] SQLiteParameterArray1 = parameters;
+      SQLiteParameter SQLiteParameter1 = new SQLiteParameter(nameof (id), DbType.Int32);
+      SQLiteParameter1.Value = (object) id;
+      SQLiteParameter SQLiteParameter2 = SQLiteParameter1;
+      SQLiteParameterArray1[0] = SQLiteParameter2;
+      SQLiteParameter[] SQLiteParameterArray2 = parameters;
+      SQLiteParameter SQLiteParameter3 = new SQLiteParameter(nameof (type), DbType.Int32);
+      SQLiteParameter3.Value = (object) (int) type;
+      SQLiteParameter SQLiteParameter4 = SQLiteParameter3;
+      SQLiteParameterArray2[1] = SQLiteParameter4;
+      SQLiteParameter[] SQLiteParameterArray3 = parameters;
+      SQLiteParameter SQLiteParameter5 = new SQLiteParameter("x", DbType.Single);
+      SQLiteParameter5.Value = (object) position.X;
+      SQLiteParameter SQLiteParameter6 = SQLiteParameter5;
+      SQLiteParameterArray3[2] = SQLiteParameter6;
+      SQLiteParameter[] SQLiteParameterArray4 = parameters;
+      SQLiteParameter SQLiteParameter7 = new SQLiteParameter("y", DbType.Single);
+      SQLiteParameter7.Value = (object) position.Y;
+      SQLiteParameter SQLiteParameter8 = SQLiteParameter7;
+      SQLiteParameterArray4[3] = SQLiteParameter8;
+      SQLiteParameter[] SQLiteParameterArray5 = parameters;
+      SQLiteParameter SQLiteParameter9 = new SQLiteParameter("z", DbType.Single);
+      SQLiteParameter9.Value = (object) position.Z;
+      SQLiteParameter SQLiteParameter10 = SQLiteParameter9;
+      SQLiteParameterArray5[4] = SQLiteParameter10;
+      SQLiteParameter[] SQLiteParameterArray6 = parameters;
+      SQLiteParameter SQLiteParameter11 = new SQLiteParameter("items", DbType.Binary);
+      SQLiteParameter11.Value = (object) itemData;
+      SQLiteParameter SQLiteParameter12 = SQLiteParameter11;
+      SQLiteParameterArray6[5] = SQLiteParameter12;
       this.ExecuteNonQuery("INSERT OR REPLACE INTO inventoryItems VALUES (@id, @type, @x, @y, @z, @items);", parameters);
     }
 
@@ -1508,46 +1509,46 @@ namespace CornerSpace
       int num6 = itemsToStore[5] ?? -1;
       int num7 = itemsToStore[6] ?? -1;
       SQLiteParameter[] parameters = new SQLiteParameter[8];
-      SQLiteParameter[] sqLiteParameterArray1 = parameters;
-      SQLiteParameter sqLiteParameter1 = new SQLiteParameter(nameof (id), DbType.Int32);
-      sqLiteParameter1.Value = (object) id;
-      SQLiteParameter sqLiteParameter2 = sqLiteParameter1;
-      sqLiteParameterArray1[0] = sqLiteParameter2;
-      SQLiteParameter[] sqLiteParameterArray2 = parameters;
-      SQLiteParameter sqLiteParameter3 = new SQLiteParameter("head", DbType.Int32);
-      sqLiteParameter3.Value = (object) num1;
-      SQLiteParameter sqLiteParameter4 = sqLiteParameter3;
-      sqLiteParameterArray2[1] = sqLiteParameter4;
-      SQLiteParameter[] sqLiteParameterArray3 = parameters;
-      SQLiteParameter sqLiteParameter5 = new SQLiteParameter("shoulders", DbType.Int32);
-      sqLiteParameter5.Value = (object) num2;
-      SQLiteParameter sqLiteParameter6 = sqLiteParameter5;
-      sqLiteParameterArray3[2] = sqLiteParameter6;
-      SQLiteParameter[] sqLiteParameterArray4 = parameters;
-      SQLiteParameter sqLiteParameter7 = new SQLiteParameter("chest", DbType.Int32);
-      sqLiteParameter7.Value = (object) num3;
-      SQLiteParameter sqLiteParameter8 = sqLiteParameter7;
-      sqLiteParameterArray4[3] = sqLiteParameter8;
-      SQLiteParameter[] sqLiteParameterArray5 = parameters;
-      SQLiteParameter sqLiteParameter9 = new SQLiteParameter("legs", DbType.Int32);
-      sqLiteParameter9.Value = (object) num4;
-      SQLiteParameter sqLiteParameter10 = sqLiteParameter9;
-      sqLiteParameterArray5[4] = sqLiteParameter10;
-      SQLiteParameter[] sqLiteParameterArray6 = parameters;
-      SQLiteParameter sqLiteParameter11 = new SQLiteParameter("hands", DbType.Int32);
-      sqLiteParameter11.Value = (object) num5;
-      SQLiteParameter sqLiteParameter12 = sqLiteParameter11;
-      sqLiteParameterArray6[5] = sqLiteParameter12;
-      SQLiteParameter[] sqLiteParameterArray7 = parameters;
-      SQLiteParameter sqLiteParameter13 = new SQLiteParameter("feet", DbType.Int32);
-      sqLiteParameter13.Value = (object) num6;
-      SQLiteParameter sqLiteParameter14 = sqLiteParameter13;
-      sqLiteParameterArray7[6] = sqLiteParameter14;
-      SQLiteParameter[] sqLiteParameterArray8 = parameters;
-      SQLiteParameter sqLiteParameter15 = new SQLiteParameter("power", DbType.Int32);
-      sqLiteParameter15.Value = (object) num7;
-      SQLiteParameter sqLiteParameter16 = sqLiteParameter15;
-      sqLiteParameterArray8[7] = sqLiteParameter16;
+      SQLiteParameter[] SQLiteParameterArray1 = parameters;
+      SQLiteParameter SQLiteParameter1 = new SQLiteParameter(nameof (id), DbType.Int32);
+      SQLiteParameter1.Value = (object) id;
+      SQLiteParameter SQLiteParameter2 = SQLiteParameter1;
+      SQLiteParameterArray1[0] = SQLiteParameter2;
+      SQLiteParameter[] SQLiteParameterArray2 = parameters;
+      SQLiteParameter SQLiteParameter3 = new SQLiteParameter("head", DbType.Int32);
+      SQLiteParameter3.Value = (object) num1;
+      SQLiteParameter SQLiteParameter4 = SQLiteParameter3;
+      SQLiteParameterArray2[1] = SQLiteParameter4;
+      SQLiteParameter[] SQLiteParameterArray3 = parameters;
+      SQLiteParameter SQLiteParameter5 = new SQLiteParameter("shoulders", DbType.Int32);
+      SQLiteParameter5.Value = (object) num2;
+      SQLiteParameter SQLiteParameter6 = SQLiteParameter5;
+      SQLiteParameterArray3[2] = SQLiteParameter6;
+      SQLiteParameter[] SQLiteParameterArray4 = parameters;
+      SQLiteParameter SQLiteParameter7 = new SQLiteParameter("chest", DbType.Int32);
+      SQLiteParameter7.Value = (object) num3;
+      SQLiteParameter SQLiteParameter8 = SQLiteParameter7;
+      SQLiteParameterArray4[3] = SQLiteParameter8;
+      SQLiteParameter[] SQLiteParameterArray5 = parameters;
+      SQLiteParameter SQLiteParameter9 = new SQLiteParameter("legs", DbType.Int32);
+      SQLiteParameter9.Value = (object) num4;
+      SQLiteParameter SQLiteParameter10 = SQLiteParameter9;
+      SQLiteParameterArray5[4] = SQLiteParameter10;
+      SQLiteParameter[] SQLiteParameterArray6 = parameters;
+      SQLiteParameter SQLiteParameter11 = new SQLiteParameter("hands", DbType.Int32);
+      SQLiteParameter11.Value = (object) num5;
+      SQLiteParameter SQLiteParameter12 = SQLiteParameter11;
+      SQLiteParameterArray6[5] = SQLiteParameter12;
+      SQLiteParameter[] SQLiteParameterArray7 = parameters;
+      SQLiteParameter SQLiteParameter13 = new SQLiteParameter("feet", DbType.Int32);
+      SQLiteParameter13.Value = (object) num6;
+      SQLiteParameter SQLiteParameter14 = SQLiteParameter13;
+      SQLiteParameterArray7[6] = SQLiteParameter14;
+      SQLiteParameter[] SQLiteParameterArray8 = parameters;
+      SQLiteParameter SQLiteParameter15 = new SQLiteParameter("power", DbType.Int32);
+      SQLiteParameter15.Value = (object) num7;
+      SQLiteParameter SQLiteParameter16 = SQLiteParameter15;
+      SQLiteParameterArray8[7] = SQLiteParameter16;
       this.ExecuteNonQuery("INSERT OR REPLACE INTO wearedItems VALUES (@id, @head, @shoulders, @chest, @legs, @hands, @feet, @power);", parameters);
     }
 

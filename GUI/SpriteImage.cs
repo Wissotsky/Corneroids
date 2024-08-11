@@ -38,11 +38,9 @@ namespace CornerSpace.GUI
       try
       {
         SpriteBatch spriteBatch = Engine.SpriteBatch;
-        spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
-        Engine.GraphicsDevice.SamplerStates[0].MagFilter = TextureFilter.Point;
-        Engine.GraphicsDevice.SamplerStates[0].MinFilter = TextureFilter.Point;
-        Engine.GraphicsDevice.SamplerStates[0].MipFilter = TextureFilter.Point;
-        spriteBatch.Draw(this.sourceImage, destination, new Rectangle?(this.positionAndSizeInSourceImage), Color.White);
+        spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+        Engine.GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp;
+        spriteBatch.Draw(this.sourceImage, destination, this.positionAndSizeInSourceImage, Color.White);
         spriteBatch.End();
       }
       catch (Exception ex)

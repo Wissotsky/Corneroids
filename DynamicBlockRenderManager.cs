@@ -93,44 +93,37 @@ namespace CornerSpace
     {
       if (this.updateRequired)
       {
-        int vertexCount = this.TotalNumberOfVertices();
-        int indexCount = vertexCount * 6 / 4;
-        if (this.UpdateBuffers(vertexCount, indexCount, true))
-        {
-          this.SetDataToBuffers();
-          this.updateRequired = false;
-        }
+      int vertexCount = this.TotalNumberOfVertices();
+      int indexCount = vertexCount * 6 / 4;
+      if (this.UpdateBuffers(vertexCount, indexCount, true))
+      {
+        this.SetDataToBuffers();
+        this.updateRequired = false;
+      }
       }
       if (this.numberOfVertices <= 0 || this.vertexBuffer == null || this.indexBuffer == null)
-        return;
+      return;
       GraphicsDevice graphicsDevice = Engine.GraphicsDevice;
-      graphicsDevice.Vertices[0].SetSource((VertexBuffer) this.vertexBuffer, 0, (int) DynamicBlockVertex.SizeInBytes);
-      graphicsDevice.Indices = (IndexBuffer) this.indexBuffer;
-      graphicsDevice.VertexDeclaration = this.vertexBuffer.Declaration;
+      graphicsDevice.SetVertexBuffer(this.vertexBuffer);
+      graphicsDevice.Indices = this.indexBuffer;
       this.fullEffect.Parameters["World"].SetValue(this.sectorMatrix);
       this.fullEffect.Parameters["View"].SetValue(camera.ViewMatrix);
       this.fullEffect.Parameters["Projection"].SetValue(camera.ProjectionMatrix);
       for (int index1 = 0; index1 < this.blockList.Count / 50 + 1; ++index1)
       {
-        int num1 = index1 * 50;
-        int num2 = Math.Min(num1 + 50, this.blockList.Count);
-        if (num2 > num1)
-        {
-          int num3 = 0;
-          for (int index2 = num1; index2 < num2; ++index2)
-            DynamicBlockRenderManager.transformMatrices[num3++] = this.blockList[index2].DynamicBlock.TransformMatrix;
-          int startIndex = 36 * index1 * 50;
-          int primitiveCount = (num2 - num1) * 36 / 3;
-          this.fullEffect.Parameters["TransformMatrices"].SetValue(DynamicBlockRenderManager.transformMatrices);
-          this.fullEffect.Begin();
-          foreach (EffectPass pass in this.fullEffect.CurrentTechnique.Passes)
-          {
-            pass.Begin();
-            graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, this.numberOfVertices, startIndex, primitiveCount);
-            pass.End();
-          }
-          this.fullEffect.End();
-        }
+      int num1 = index1 * 50;
+      int num2 = Math.Min(num1 + 50, this.blockList.Count);
+      if (num2 > num1)
+      {
+        int num3 = 0;
+        for (int index2 = num1; index2 < num2; ++index2)
+        DynamicBlockRenderManager.transformMatrices[num3++] = this.blockList[index2].DynamicBlock.TransformMatrix;
+        int startIndex = 36 * index1 * 50;
+        int primitiveCount = (num2 - num1) * 36 / 3;
+        this.fullEffect.Parameters["TransformMatrices"].SetValue(DynamicBlockRenderManager.transformMatrices);
+        this.fullEffect.CurrentTechnique.Passes[0].Apply();
+        graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, this.numberOfVertices, startIndex, primitiveCount);
+      }
       }
     }
 
@@ -142,7 +135,7 @@ namespace CornerSpace
     {
       try
       {
-        vb = new VertexBufferObj(Engine.GraphicsDevice, vbSize, (int) DynamicBlockVertex.SizeInBytes, Engine.VertexDeclarationPool[4], BufferUsage.WriteOnly);
+        vb = new VertexBufferObj(Engine.GraphicsDevice, Engine.VertexDeclarationPool[4], vbSize, BufferUsage.WriteOnly);
         ib = new IndexBufferObj(Engine.GraphicsDevice, ibSize, BufferUsage.WriteOnly, IndexElementSize.SixteenBits);
       }
       catch (Exception ex)

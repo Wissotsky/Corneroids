@@ -54,44 +54,40 @@ namespace CornerSpace
     {
       if (this.updateRequired)
       {
-        BlockSector.GraphicBufferManager.GetPermissionToCreateNewBuffers((System.Action) (() =>
+      BlockSector.GraphicBufferManager.GetPermissionToCreateNewBuffers((System.Action)(() =>
+      {
+        if (this.isDisposed)
+        return;
+        this.numberOfVertices = 0;
+        this.numberOfIndices = 0;
+        this.vertexStructureTree.GetReducedVerticesAndIndices(BlockRenderManager<T>.vertexArray, ref this.numberOfVertices, BlockRenderManager<T>.indexArray, ref this.numberOfIndices, quality);
+        if (!this.UpdateBuffers(this.numberOfVertices, this.numberOfIndices, quality == (byte)0) || this.numberOfVertices <= 0)
+        return;
+        if (this.numberOfIndices <= 0)
+        return;
+        try
         {
-          if (this.isDisposed)
-            return;
-          this.numberOfVertices = 0;
-          this.numberOfIndices = 0;
-          this.vertexStructureTree.GetReducedVerticesAndIndices(BlockRenderManager<T>.vertexArray, ref this.numberOfVertices, BlockRenderManager<T>.indexArray, ref this.numberOfIndices, quality);
-          if (!this.UpdateBuffers(this.numberOfVertices, this.numberOfIndices, quality == (byte) 0) || this.numberOfVertices <= 0)
-            return;
-          if (this.numberOfIndices <= 0)
-            return;
-          try
-          {
-            this.vertexBuffer.SetData<BlockVertex>(BlockRenderManager<T>.vertexArray, 0, this.numberOfVertices);
-            this.indexBuffer.SetData<short>(BlockRenderManager<T>.indexArray, 0, this.numberOfIndices);
-          }
-          catch (Exception ex)
-          {
-            Engine.Console.WriteErrorLine("Failed to set data to buffers: " + ex.Message);
-          }
-        }), (object) this);
-        this.updateRequired = false;
+        this.vertexBuffer.SetData<BlockVertex>(BlockRenderManager<T>.vertexArray, 0, this.numberOfVertices);
+        this.indexBuffer.SetData<short>(BlockRenderManager<T>.indexArray, 0, this.numberOfIndices);
+        }
+        catch (Exception ex)
+        {
+        Engine.Console.WriteErrorLine("Failed to set data to buffers: " + ex.Message);
+        }
+      }), (object)this);
+      this.updateRequired = false;
       }
       if (this.numberOfVertices <= 0 || this.vertexBuffer == null || this.indexBuffer == null)
-        return;
+      return;
       GraphicsDevice graphicsDevice = Engine.GraphicsDevice;
-      Effect effect = (quality == (byte) 0 ? this.fullEffect : this.reducedEffect) ?? this.fullEffect;
-      graphicsDevice.VertexDeclaration = this.vertexBuffer.Declaration;
-      graphicsDevice.Vertices[0].SetSource((VertexBuffer) this.vertexBuffer, 0, (int) BlockVertex.SizeInBytes);
-      graphicsDevice.Indices = (IndexBuffer) this.indexBuffer;
+      Effect effect = (quality == (byte)0 ? this.fullEffect : this.reducedEffect) ?? this.fullEffect;
+      graphicsDevice.SetVertexBuffer(this.vertexBuffer);
+      graphicsDevice.Indices = this.indexBuffer;
       Matrix matrix = this.sectorMatrix * camera.ViewMatrix * camera.ProjectionMatrix;
       effect.Parameters["World"].SetValue(this.sectorMatrix);
       effect.Parameters["WVP"].SetValue(matrix);
-      effect.Begin();
-      effect.CurrentTechnique.Passes[0].Begin();
+      effect.CurrentTechnique.Passes[0].Apply();
       graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, this.numberOfVertices, 0, this.numberOfIndices / 3);
-      effect.CurrentTechnique.Passes[0].End();
-      effect.End();
     }
 
     public void SetVertexStructureTree(BlockOctTree rootNode)

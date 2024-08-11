@@ -5,6 +5,7 @@
 // Assembly location: C:\Users\Wissotsky\Desktop\camcompute\Corneroids\Corneroids.exe
 
 using CornerSpace.GUI;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 #nullable disable

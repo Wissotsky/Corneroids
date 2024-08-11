@@ -54,18 +54,20 @@ namespace CornerSpace.GUI
       GraphicsDevice graphicsDevice = Engine.GraphicsDevice;
       this.orientation *= Quaternion.CreateFromYawPitchRoll(1f * Engine.FrameCounter.DeltaTime, 1f * Engine.FrameCounter.DeltaTime, 0.0f);
       Byte3 size = this.previewBlock.Size;
-      float num = (float) Math.Max(Math.Max(size.X, size.Z), size.Y);
+      float num = (float)Math.Max(Math.Max(size.X, size.Z), size.Y);
       Viewport viewport1 = new Viewport()
       {
         X = destinationRectangle.X,
         Y = destinationRectangle.Y,
         Width = destinationRectangle.Width,
-        Height = destinationRectangle.Height
+        Height = destinationRectangle.Height,
+        MinDepth = 0,
+        MaxDepth = 1
       };
-      this.effect.World = Matrix.CreateFromQuaternion(this.orientation) * Matrix.CreateTranslation(0.0f, 0.0f, (float) (-(double) num - 0.5));
+      this.effect.World = Matrix.CreateFromQuaternion(this.orientation) * Matrix.CreateTranslation(0.0f, 0.0f, -(num + 0.5f));
       this.effect.View = Matrix.Identity;
-      this.effect.Projection = Matrix.CreatePerspectiveFieldOfView(1.57079637f, viewport1.AspectRatio, 0.1f, 100f);
-      graphicsDevice.RenderState.DepthBufferEnable = false;
+      this.effect.Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver2, viewport1.AspectRatio, 0.1f, 100f);
+      graphicsDevice.DepthStencilState = DepthStencilState.Default;
       Viewport viewport2 = graphicsDevice.Viewport;
       graphicsDevice.Viewport = viewport1;
       graphicsDevice.Viewport = viewport2;

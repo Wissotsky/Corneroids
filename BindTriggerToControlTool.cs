@@ -106,20 +106,11 @@ namespace CornerSpace
       this.effect.Parameters["World"].SetValue(owner.TransformMatrix * Matrix.CreateTranslation(camera.GetPositionRelativeToCamera(owner.Position)));
       this.effect.Parameters["View"].SetValue(camera.ViewMatrix);
       this.effect.Parameters["Projection"].SetValue(camera.ProjectionMatrix);
-      Engine.GraphicsDevice.VertexDeclaration = this.vertexDeclaration;
-      graphicsDevice.RenderState.CullMode = CullMode.None;
-      graphicsDevice.RenderState.AlphaBlendEnable = false;
-      graphicsDevice.RenderState.DepthBufferFunction = CompareFunction.LessEqual;
-      graphicsDevice.RenderState.DepthBufferEnable = true;
-      graphicsDevice.RenderState.DepthBufferWriteEnable = false;
-      this.effect.Begin();
-      foreach (EffectPass pass in this.effect.CurrentTechnique.Passes)
-      {
-        pass.Begin();
-        graphicsDevice.DrawUserIndexedPrimitives<VertexPositionColorTexture>(PrimitiveType.TriangleList, this.vertices, 0, this.vertices.Length, this.indices, 0, this.indices.Length / 3);
-        pass.End();
-      }
-      this.effect.End();
+      graphicsDevice.BlendState = BlendState.Opaque;
+      graphicsDevice.DepthStencilState = DepthStencilState.Default;
+      graphicsDevice.RasterizerState = RasterizerState.CullNone;
+      this.effect.CurrentTechnique.Passes[0].Apply();
+      graphicsDevice.DrawUserIndexedPrimitives<VertexPositionColorTexture>(PrimitiveType.TriangleList, this.vertices, 0, this.vertices.Length, this.indices, 0, this.indices.Length / 3);
     }
 
     public ControlBlock ControlBlock => this.controlBlock;

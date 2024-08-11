@@ -18,7 +18,7 @@ namespace CornerSpace
       int indexCount,
       BufferUsage usage,
       IndexElementSize elementSize)
-      : base(device, indexCount * (elementSize == IndexElementSize.SixteenBits ? 2 : 4), usage, elementSize)
+      : base(device, elementSize, indexCount, usage)
     {
       this.indexCount = indexCount;
     }

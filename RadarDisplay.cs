@@ -19,7 +19,7 @@ namespace CornerSpace
     private BillboardBatch billboardBatch;
     private Texture2D blankTexture;
     private Camera camera;
-    private DepthStencilBuffer depthBuffer;
+    //private DepthStencilBuffer depthBuffer;
     private List<PhysicalObject> entities;
     private Quaternion orientation;
     private Vector3 origo;
@@ -67,19 +67,16 @@ namespace CornerSpace
       this.effect.Parameters["World"].SetValue(Matrix.CreateScale(2f, 1f, 2f));
       this.effect.Parameters["View"].SetValue(this.camera.ViewMatrix);
       this.effect.Parameters["Projection"].SetValue(this.camera.ProjectionMatrix);
-      Engine.GraphicsDevice.VertexDeclaration = this.vertexDeclaration;
-      Engine.GraphicsDevice.Vertices[0].SetSource((VertexBuffer) this.vertexBuffer, 0, VertexPositionTexture.SizeInBytes);
-      Engine.GraphicsDevice.RenderState.CullMode = CullMode.None;
-      Engine.GraphicsDevice.RenderState.DepthBufferEnable = true;
-      Engine.GraphicsDevice.RenderState.DepthBufferWriteEnable = true;
-      Engine.GraphicsDevice.RenderState.AlphaBlendEnable = false;
+      //Engine.GraphicsDevice.VertexDeclaration = this.vertexDeclaration;
+      //Engine.GraphicsDevice.Vertices[0].SetSource((VertexBuffer) this.vertexBuffer, 0, VertexPositionTexture.SizeInBytes);
+      Engine.GraphicsDevice.SetVertexBuffer(this.vertexBuffer);
+      Engine.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
+      Engine.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+      Engine.GraphicsDevice.BlendState = BlendState.Opaque;
       Viewport viewport = Engine.GraphicsDevice.Viewport;
       Engine.GraphicsDevice.Viewport = this.viewport;
-      this.effect.Begin();
-      this.effect.CurrentTechnique.Passes[0].Begin();
+      this.effect.CurrentTechnique.Passes[0].Apply();
       Engine.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
-      this.effect.CurrentTechnique.Passes[0].End();
-      this.effect.End();
       if (this.entities.Count > 0)
       {
         Color red = Color.Red;
@@ -87,7 +84,7 @@ namespace CornerSpace
         this.billboardBatch.Begin();
         if (0 < this.entities.Count)
           throw new NotImplementedException();
-        this.billboardBatch.End((IRenderCamera) this.camera);
+        this.billboardBatch.End((IRenderCamera)this.camera);
       }
       Engine.GraphicsDevice.Viewport = viewport;
     }
@@ -117,7 +114,7 @@ namespace CornerSpace
         return;
       try
       {
-        this.vertexBuffer = new VertexBufferObj(Engine.GraphicsDevice, 6, VertexPositionTexture.SizeInBytes, Engine.VertexDeclarationPool[2], BufferUsage.WriteOnly);
+        this.vertexBuffer = new VertexBufferObj(Engine.GraphicsDevice, Engine.VertexDeclarationPool[2], 6, BufferUsage.WriteOnly);
         this.vertexBuffer.SetData<VertexPositionTexture>(new List<VertexPositionTexture>()
         {
           new VertexPositionTexture(new Vector3(-0.5f, 0.0f, -0.5f), Vector2.Zero),

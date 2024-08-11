@@ -4,6 +4,7 @@
 // MVID: 16145FCE-2BFC-487E-A607-E2168F0C1632
 // Assembly location: C:\Users\Wissotsky\Desktop\camcompute\Corneroids\Corneroids.exe
 
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 

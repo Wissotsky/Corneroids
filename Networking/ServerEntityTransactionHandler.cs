@@ -5,6 +5,7 @@
 // Assembly location: C:\Users\Wissotsky\Desktop\camcompute\Corneroids\Corneroids.exe
 
 using Lidgren.Network;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;

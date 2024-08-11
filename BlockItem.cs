@@ -231,7 +231,7 @@ namespace CornerSpace
       if (!this.pickedWorldPosition.HasValue)
         return;
       GraphicsDevice graphicsDevice = Engine.GraphicsDevice;
-      Vector3 size1 = (Vector3) this.blockToPlace.Size;
+      Vector3 size1 = (Vector3)this.blockToPlace.Size;
       Byte3 size2 = this.blockToPlace.Size;
       Vector3 modelPlacement = this.blockToPlace.GetBlockType().ModelPlacement;
       Vector3 positionForBlock = this.EvaluateRenderPositionForBlock(camera);
@@ -239,20 +239,12 @@ namespace CornerSpace
       this.blockEffect.Parameters["World"].SetValue(Matrix.CreateScale(0.99f) * Matrix.CreateTranslation(modelPlacement) * this.blockToPlace.OrientationMatrix * Matrix.CreateFromQuaternion(quaternion) * Matrix.CreateTranslation(positionForBlock));
       this.blockEffect.Parameters["View"].SetValue(camera.ViewMatrix);
       this.blockEffect.Parameters["Projection"].SetValue(camera.ProjectionMatrix);
-      Engine.GraphicsDevice.VertexDeclaration = this.vertexDeclarationBlock;
-      graphicsDevice.RenderState.CullMode = CullMode.CullClockwiseFace;
-      graphicsDevice.RenderState.DepthBufferEnable = true;
-      graphicsDevice.RenderState.DepthBufferWriteEnable = true;
-      graphicsDevice.RenderState.DepthBufferFunction = CompareFunction.LessEqual;
-      graphicsDevice.RenderState.AlphaBlendEnable = false;
-      this.blockEffect.Begin();
-      foreach (EffectPass pass in this.blockEffect.CurrentTechnique.Passes)
-      {
-        pass.Begin();
-        graphicsDevice.DrawUserIndexedPrimitives<VertexPositionTexture>(PrimitiveType.TriangleList, this.blockVertices, 0, this.blockVertices.Length, this.blockIndices, 0, this.blockIndices.Length / 3);
-        pass.End();
-      }
-      this.blockEffect.End();
+      //Engine.GraphicsDevice.VertexDeclaration = this.vertexDeclarationBlock;
+      graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+      graphicsDevice.DepthStencilState = DepthStencilState.Default;
+      graphicsDevice.BlendState = BlendState.Opaque;
+      this.blockEffect.CurrentTechnique.Passes[0].Apply();
+      graphicsDevice.DrawUserIndexedPrimitives<VertexPositionTexture>(PrimitiveType.TriangleList, this.blockVertices, 0, this.blockVertices.Length, this.blockIndices, 0, this.blockIndices.Length / 3);
     }
 
     private void RenderEntityToBlockLine(IRenderCamera camera)
@@ -262,20 +254,17 @@ namespace CornerSpace
       Position3 position3 = this.pickedEntity == null ? this.pickedWorldPosition.Value : this.pickedEntity.EntityCoordsToWorldCoords(this.pickedEntityPosition.Value);
       Position3 position = this.pickedEntity.Position;
       float? squaredToClosestBlock = this.pickedEntity.GetDistanceSquaredToClosestBlock(position3);
-      if (((double) squaredToClosestBlock.GetValueOrDefault() > 256.0 ? 0 : (squaredToClosestBlock.HasValue ? 1 : 0)) == 0)
+      if (((double)squaredToClosestBlock.GetValueOrDefault() > 256.0 ? 0 : (squaredToClosestBlock.HasValue ? 1 : 0)) == 0)
         return;
       Matrix lineMatrix = this.EvaluateLineMatrix(camera.GetPositionRelativeToCamera(position3), camera.GetPositionRelativeToCamera(position));
       BlockItem.lineEffect.Parameters["World"].SetValue(lineMatrix);
       BlockItem.lineEffect.Parameters["View"].SetValue(camera.ViewMatrix);
       BlockItem.lineEffect.Parameters["Projection"].SetValue(camera.ProjectionMatrix);
-      Engine.GraphicsDevice.RenderState.CullMode = CullMode.None;
-      Engine.GraphicsDevice.RenderState.DepthBufferEnable = true;
-      Engine.GraphicsDevice.VertexDeclaration = Engine.VertexDeclarationPool[1];
-      BlockItem.lineEffect.Begin();
-      BlockItem.lineEffect.CurrentTechnique.Passes[0].Begin();
-      Engine.GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionColor>(PrimitiveType.TriangleList, BlockItem.lineVertices, 0, BlockItem.lineVertices.Length, BlockItem.lineIndices, 0, BlockItem.lineIndices.Length / 3);
-      BlockItem.lineEffect.CurrentTechnique.Passes[0].End();
-      BlockItem.lineEffect.End();
+      GraphicsDevice graphicsDevice = Engine.GraphicsDevice;
+      graphicsDevice.RasterizerState = RasterizerState.CullNone;
+      graphicsDevice.DepthStencilState = DepthStencilState.Default;
+      BlockItem.lineEffect.CurrentTechnique.Passes[0].Apply();
+      graphicsDevice.DrawUserIndexedPrimitives<VertexPositionColor>(PrimitiveType.TriangleList, BlockItem.lineVertices, 0, BlockItem.lineVertices.Length, BlockItem.lineIndices, 0, BlockItem.lineIndices.Length / 3);
     }
 
     private void RenderSelectionBox(IRenderCamera camera)
@@ -289,20 +278,14 @@ namespace CornerSpace
       this.selectionEffect.Parameters["View"].SetValue(camera.ViewMatrix);
       this.selectionEffect.Parameters["Projection"].SetValue(camera.ProjectionMatrix);
       this.selectionEffect.Parameters["SelectorColor"].SetValue(Vector4.One);
-      Engine.GraphicsDevice.VertexDeclaration = this.vertexDeclarationSelector;
-      graphicsDevice.RenderState.CullMode = CullMode.None;
-      graphicsDevice.RenderState.DepthBufferEnable = true;
-      graphicsDevice.RenderState.DepthBufferWriteEnable = false;
-      graphicsDevice.RenderState.DepthBufferFunction = CompareFunction.LessEqual;
-      graphicsDevice.RenderState.AlphaBlendEnable = false;
-      this.selectionEffect.Begin();
+      graphicsDevice.RasterizerState = RasterizerState.CullNone;
+      graphicsDevice.DepthStencilState = DepthStencilState.Default;
+      graphicsDevice.BlendState = BlendState.Opaque;
       foreach (EffectPass pass in this.selectionEffect.CurrentTechnique.Passes)
       {
-        pass.Begin();
+        pass.Apply();
         graphicsDevice.DrawUserIndexedPrimitives<VertexPositionColorTexture>(PrimitiveType.TriangleList, this.selectionVertices, 0, this.selectionVertices.Length, this.selectionIndices, 0, this.selectionIndices.Length / 3);
-        pass.End();
       }
-      this.selectionEffect.End();
     }
 
     private void RenderUpArrow(IRenderCamera camera)
@@ -316,27 +299,23 @@ namespace CornerSpace
       Position3 worldCoords = this.pickedEntity.EntityCoordsToWorldCoords(this.pickedEntityPosition.Value);
       Matrix rotationZ = Matrix.CreateRotationZ(1.57079637f);
       if (this.blockToPlace != null)
-        rotationZ *= Matrix.CreateTranslation(0.0f, (float) this.blockToPlace.ModelSize.Y - 1f, 0.0f);
+        rotationZ *= Matrix.CreateTranslation(0.0f, (float)this.blockToPlace.ModelSize.Y - 1f, 0.0f);
       Vector3 axis = Vector3.Cross(Vector3.Up, worldNormal);
       if (axis != Vector3.Zero)
       {
         axis.Normalize();
-        float angle = (float) Math.Acos((double) Vector3.Dot(worldNormal, Vector3.Up));
+        float angle = (float)Math.Acos((double)Vector3.Dot(worldNormal, Vector3.Up));
         rotationZ *= Matrix.CreateFromAxisAngle(axis, angle);
       }
       Matrix matrix = rotationZ * Matrix.CreateTranslation(camera.GetPositionRelativeToCamera(worldCoords));
       BlockItem.lineEffect.Parameters["World"].SetValue(matrix);
       BlockItem.lineEffect.Parameters["View"].SetValue(camera.ViewMatrix);
       BlockItem.lineEffect.Parameters["Projection"].SetValue(camera.ProjectionMatrix);
-      Engine.GraphicsDevice.RenderState.CullMode = CullMode.None;
-      Engine.GraphicsDevice.RenderState.DepthBufferEnable = true;
-      Engine.GraphicsDevice.RenderState.DepthBufferWriteEnable = true;
-      Engine.GraphicsDevice.VertexDeclaration = Engine.VertexDeclarationPool[1];
-      BlockItem.lineEffect.Begin();
-      BlockItem.lineEffect.CurrentTechnique.Passes[0].Begin();
-      Engine.GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionColor>(PrimitiveType.TriangleList, BlockItem.arrowVertices, 0, BlockItem.arrowVertices.Length, BlockItem.arrowIndices, 0, BlockItem.arrowIndices.Length / 3);
-      BlockItem.lineEffect.CurrentTechnique.Passes[0].End();
-      BlockItem.lineEffect.End();
+      GraphicsDevice graphicsDevice = Engine.GraphicsDevice;
+      graphicsDevice.RasterizerState = RasterizerState.CullNone;
+      graphicsDevice.DepthStencilState = DepthStencilState.Default;
+      BlockItem.lineEffect.CurrentTechnique.Passes[0].Apply();
+      graphicsDevice.DrawUserIndexedPrimitives<VertexPositionColor>(PrimitiveType.TriangleList, BlockItem.arrowVertices, 0, BlockItem.arrowVertices.Length, BlockItem.arrowIndices, 0, BlockItem.arrowIndices.Length / 3);
     }
   }
 }

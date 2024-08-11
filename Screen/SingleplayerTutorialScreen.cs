@@ -52,7 +52,7 @@ namespace CornerSpace.Screen
       this.backgroundFieldLayer.Render();
       this.buttonStart.Render();
       SpriteBatch spriteBatch = Engine.SpriteBatch;
-      spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
+      spriteBatch.Begin(SpriteSortMode.Immediate,BlendState.AlphaBlend);
       Engine.SetPointSamplerStateForSpritebatch();
       spriteBatch.DrawString(Engine.Font, "Welcome to Corneroids!", this.backgroundFieldLayer.Position + Vector2.One * 10f, Color.White);
       spriteBatch.DrawString(Engine.Font, "In this sandbox game mode you can mine, craft, ", this.backgroundFieldLayer.Position + new Vector2(10f, 50f), Color.White);

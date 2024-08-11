@@ -39,19 +39,19 @@ namespace CornerSpace
       {
         if (connection.State == ConnectionState.Closed)
           connection.Open();
-        using (SQLiteDataAdapter sqLiteDataAdapter = new SQLiteDataAdapter())
+        using (SQLiteDataAdapter SQLiteDataAdapter = new SQLiteDataAdapter())
         {
-          using (SQLiteCommand sqLiteCommand = new SQLiteCommand(connection))
+          using (SQLiteCommand SQLiteCommand = new SQLiteCommand(connection))
           {
             DataTable dataTable = new DataTable();
-            sqLiteCommand.CommandText = query;
+            SQLiteCommand.CommandText = query;
             if (parameters != null)
             {
               for (int index = 0; index < parameters.Length; ++index)
-                sqLiteCommand.Parameters.Add(parameters[index]);
+                SQLiteCommand.Parameters.Add(parameters[index]);
             }
-            sqLiteDataAdapter.SelectCommand = sqLiteCommand;
-            sqLiteDataAdapter.Fill(dataTable);
+            SQLiteDataAdapter.SelectCommand = SQLiteCommand;
+            SQLiteDataAdapter.Fill(dataTable);
             return dataTable;
           }
         }
@@ -272,14 +272,14 @@ namespace CornerSpace
       {
         dbConnection.Open();
         string databaseCreationQuery = DatabaseStructure.Instance.DatabaseCreationQuery;
-        using (SQLiteCommand sqLiteCommand = new SQLiteCommand(dbConnection))
+        using (SQLiteCommand SQLiteCommand = new SQLiteCommand(dbConnection))
         {
-          sqLiteCommand.CommandText = databaseCreationQuery;
-          sqLiteCommand.ExecuteNonQuery();
+          SQLiteCommand.CommandText = databaseCreationQuery;
+          SQLiteCommand.ExecuteNonQuery();
           string str1 = Engine.WorldVersion.ToString((IFormatProvider) CultureInfo.InvariantCulture);
           string str2 = "INSERT INTO worldinfo VALUES ('" + world.Name + "'," + str1 + "," + (object) world.Seed + ",'" + world.Key + "'," + (object) DateTime.Now.ToBinary() + ",'" + world.Token + "');";
-          sqLiteCommand.CommandText = str2;
-          sqLiteCommand.ExecuteNonQuery();
+          SQLiteCommand.CommandText = str2;
+          SQLiteCommand.ExecuteNonQuery();
           return true;
         }
       }
@@ -301,12 +301,12 @@ namespace CornerSpace
         dbConnection.Open();
         string str1 = "UPDATE spacesectors SET state = 0 WHERE state = 1;";
         string str2 = "UPDATE entities SET loaded = 0;";
-        using (SQLiteCommand sqLiteCommand = new SQLiteCommand(dbConnection))
+        using (SQLiteCommand SQLiteCommand = new SQLiteCommand(dbConnection))
         {
-          sqLiteCommand.CommandText = str1;
-          sqLiteCommand.ExecuteNonQuery();
-          sqLiteCommand.CommandText = str2;
-          sqLiteCommand.ExecuteNonQuery();
+          SQLiteCommand.CommandText = str1;
+          SQLiteCommand.ExecuteNonQuery();
+          SQLiteCommand.CommandText = str2;
+          SQLiteCommand.ExecuteNonQuery();
         }
       }
       catch

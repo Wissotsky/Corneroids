@@ -66,7 +66,7 @@ namespace CornerSpace.Screen
       this.buttonBack.Render();
       foreach (Layer blueprintButtonLayer in this.blueprintButtonLayers)
         blueprintButtonLayer.Render();
-      Engine.SpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
+      Engine.SpriteBatch.Begin(SpriteSortMode.Immediate,BlendState.AlphaBlend);
       Engine.SetPointSamplerStateForSpritebatch();
       for (int index = 0; index < this.blueprintsPool.Count; ++index)
       {

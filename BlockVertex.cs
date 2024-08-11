@@ -4,6 +4,7 @@
 // MVID: 16145FCE-2BFC-487E-A607-E2168F0C1632
 // Assembly location: C:\Users\Wissotsky\Desktop\camcompute\Corneroids\Corneroids.exe
 
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -14,11 +15,11 @@ namespace CornerSpace
   {
     public Byte4 byte1;
     public Byte4 byte2;
-    public static readonly VertexElement[] VertexElements = new VertexElement[2]
-    {
-      new VertexElement((short) 0, (short) 0, VertexElementFormat.Byte4, VertexElementMethod.Default, VertexElementUsage.Position, (byte) 0),
-      new VertexElement((short) 0, (short) 4, VertexElementFormat.Byte4, VertexElementMethod.Default, VertexElementUsage.TextureCoordinate, (byte) 0)
-    };
+
+    public static readonly VertexDeclaration VertexDeclaration = new VertexDeclaration(
+      new VertexElement(0, VertexElementFormat.Byte4, VertexElementUsage.Position, 0),
+      new VertexElement(4, VertexElementFormat.Byte4, VertexElementUsage.TextureCoordinate, 0)
+    );
     public static readonly byte SizeInBytes = 8;
 
     public BlockVertex(byte x, byte y, byte z, byte uv)

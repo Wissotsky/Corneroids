@@ -38,22 +38,22 @@ namespace CornerSpace
       this.updateRequired = false;
       this.projectilePositions = new Vector3[50];
       this.effect = Engine.ShaderPool[5];
-      this.indices = new ushort[new IntPtr(18432)];
-      this.vertices = new ProjectileVertex[new IntPtr(4096)];
+      this.indices = new ushort[18432];
+      this.vertices = new ProjectileVertex[4096];
       try
       {
-        this.projectileIndexBuffer = new DynamicIndexBuffer(Engine.GraphicsDevice, 147456, BufferUsage.WriteOnly, IndexElementSize.SixteenBits);
-        this.projectileVertexBuffer = new DynamicVertexBuffer(Engine.GraphicsDevice, 4096 * (int) ProjectileVertex.SizeInBytes * 4, BufferUsage.WriteOnly);
+      this.projectileIndexBuffer = new DynamicIndexBuffer(Engine.GraphicsDevice, typeof(ushort), 147456, BufferUsage.WriteOnly);
+      this.projectileVertexBuffer = new DynamicVertexBuffer(Engine.GraphicsDevice, typeof(ProjectileVertex), 4096, BufferUsage.WriteOnly);
       }
       catch (Exception ex)
       {
-        Engine.Console.WriteErrorLine("Failed to create buffers for particles: " + ex.Message);
-        if (this.projectileIndexBuffer != null)
-          this.projectileIndexBuffer.Dispose();
-        if (this.projectileVertexBuffer != null)
-          this.projectileVertexBuffer.Dispose();
-        this.projectileIndexBuffer = (DynamicIndexBuffer) null;
-        this.projectileVertexBuffer = (DynamicVertexBuffer) null;
+      Engine.Console.WriteErrorLine("Failed to create buffers for particles: " + ex.Message);
+      if (this.projectileIndexBuffer != null)
+        this.projectileIndexBuffer.Dispose();
+      if (this.projectileVertexBuffer != null)
+        this.projectileVertexBuffer.Dispose();
+      this.projectileIndexBuffer = null;
+      this.projectileVertexBuffer = null;
       }
     }
 
@@ -99,7 +99,7 @@ namespace CornerSpace
           }
           else
           {
-            this.projectileVertexBuffer.SetData<ProjectileVertex>(this.bufferWritePosition * 8 * (int) ProjectileVertex.SizeInBytes, this.vertices, 0, num1, (int) ProjectileVertex.SizeInBytes, SetDataOptions.NoOverwrite);
+            this.projectileVertexBuffer.SetData<ProjectileVertex>(this.bufferWritePosition * 8 * (int)ProjectileVertex.SizeInBytes, this.vertices, 0, num1, (int)ProjectileVertex.SizeInBytes, SetDataOptions.NoOverwrite);
             this.projectileIndexBuffer.SetData<ushort>(this.bufferWritePosition * 36 * 2, this.indices, 0, elementCount, SetDataOptions.NoOverwrite);
             this.bufferRenderPosition = this.bufferWritePosition;
             this.bufferWritePosition += this.projectiles.Count;
@@ -112,34 +112,27 @@ namespace CornerSpace
         this.updateRequired = false;
       }
       GraphicsDevice graphicsDevice = Engine.GraphicsDevice;
-      graphicsDevice.VertexDeclaration = Engine.VertexDeclarationPool[5];
-      graphicsDevice.Vertices[0].SetSource((VertexBuffer) this.projectileVertexBuffer, 0, (int) ProjectileVertex.SizeInBytes);
-      graphicsDevice.Indices = (IndexBuffer) this.projectileIndexBuffer;
-      graphicsDevice.RenderState.DepthBufferEnable = true;
-      graphicsDevice.RenderState.DepthBufferFunction = CompareFunction.LessEqual;
-      graphicsDevice.RenderState.DepthBufferWriteEnable = true;
-      graphicsDevice.RenderState.CullMode = CullMode.None;
-      graphicsDevice.RenderState.StencilEnable = false;
+      //graphicsDevice.VertexDeclaration = Engine.VertexDeclarationPool[5];
+      //graphicsDevice.Vertices[0].SetSource((VertexBuffer) this.projectileVertexBuffer, 0, (int) ProjectileVertex.SizeInBytes);
+      graphicsDevice.SetVertexBuffer(this.projectileVertexBuffer);
+      graphicsDevice.Indices = this.projectileIndexBuffer;
+      graphicsDevice.DepthStencilState = DepthStencilState.Default;
+      graphicsDevice.RasterizerState = RasterizerState.CullNone;
+      graphicsDevice.BlendState = BlendState.Opaque;
       this.effect.Parameters["View"].SetValue(camera.ViewMatrix);
       this.effect.Parameters["Projection"].SetValue(camera.ProjectionMatrix);
-      double num2 = Math.Ceiling((double) this.projectiles.Count / 50.0);
-      for (int index1 = 0; (double) index1 < num2; ++index1)
+      double num2 = Math.Ceiling((double)this.projectiles.Count / 50.0);
+      for (int index1 = 0; (double)index1 < num2; ++index1)
       {
         int num3 = index1 * 50;
-        int num4 = SimpleMath.FastMin((index1 + 1) * 50, this.projectiles.Count) - num3;
+        int num4 = Math.Min((index1 + 1) * 50, this.projectiles.Count) - num3;
         for (int index2 = 0; index2 < num4; ++index2)
           this.projectilePositions[index2] = camera.GetPositionRelativeToCamera(this.projectiles[num3 + index2].Position);
         this.effect.Parameters["TransformVectors"].SetValue(this.projectilePositions);
         try
         {
-          this.effect.Begin();
-          foreach (EffectPass pass in this.effect.CurrentTechnique.Passes)
-          {
-            pass.Begin();
-            graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, this.bufferRenderPosition * 8, 0, num1, 1800 * index1 + this.bufferRenderPosition * 36, num4 * 12);
-            pass.End();
-          }
-          this.effect.End();
+          this.effect.CurrentTechnique.Passes[0].Apply();
+          graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, this.bufferRenderPosition * 8, 0, num1, 1800 * index1 + this.bufferRenderPosition * 36, num4 * 12);
         }
         catch (Exception ex)
         {

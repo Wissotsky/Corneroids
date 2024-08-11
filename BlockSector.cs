@@ -156,12 +156,10 @@ namespace CornerSpace
     {
       GraphicsDevice graphicsDevice = Engine.GraphicsDevice;
       if (graphicsDevice == null)
-        return;
-      graphicsDevice.RenderState.CullMode = CullMode.CullClockwiseFace;
-      graphicsDevice.RenderState.DepthBufferEnable = true;
-      graphicsDevice.RenderState.DepthBufferWriteEnable = true;
-      graphicsDevice.RenderState.AlphaBlendEnable = false;
-      graphicsDevice.RenderState.DepthBufferFunction = CompareFunction.LessEqual;
+      return;
+      graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+      graphicsDevice.DepthStencilState = DepthStencilState.Default;
+      graphicsDevice.BlendState = BlendState.Opaque;
     }
 
     public void Render(IRenderCamera camera, ref Matrix sectorTransformMatrix, float distance)

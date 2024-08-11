@@ -36,7 +36,7 @@ namespace CornerSpace
       this.vertexBufferSizeInVertices = this.maxBillboardsPerDrawCall * 6 * 4;
       this.vertexDeclaration = Engine.VertexDeclarationPool[6];
       this.InitializeVertexBuffer();
-      Engine.GraphicsDevice.DeviceReset += new EventHandler(this.GraphicsDeviceReseted);
+      Engine.GraphicsDevice.DeviceReset += new EventHandler<EventArgs>(this.GraphicsDeviceReseted);
     }
 
     public void Begin()
@@ -52,7 +52,7 @@ namespace CornerSpace
     {
       if (this.vertexBuffer != null && !this.vertexBuffer.IsDisposed)
         this.vertexBuffer.Dispose();
-      Engine.GraphicsDevice.DeviceReset -= new EventHandler(this.GraphicsDeviceReseted);
+      Engine.GraphicsDevice.DeviceReset -= this.GraphicsDeviceReseted;
     }
 
     public void DrawBillboard(
@@ -147,9 +147,9 @@ namespace CornerSpace
         this.effect.Parameters["Projection"].SetValue(camera.ProjectionMatrix);
         this.effect.Parameters["CameraPosition"].SetValue(Vector3.Zero);
         this.effect.Parameters["CameraUpVector"].SetValue(camera.GetUpVector());
-        Engine.GraphicsDevice.RenderState.DepthBufferEnable = true;
-        Engine.GraphicsDevice.RenderState.DepthBufferFunction = CompareFunction.LessEqual;
-        Engine.GraphicsDevice.RenderState.DepthBufferWriteEnable = true;
+        Engine.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+        Engine.GraphicsDevice.BlendState = BlendState.Opaque;
+        Engine.GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
         int num1 = 0;
         foreach (Texture2D key in this.texturesAndSprites.Keys)
         {
@@ -166,8 +166,8 @@ namespace CornerSpace
               if (elementCount != 0)
               {
                 for (int index2 = 0; index2 < num4 - num3; ++index2)
-                  Array.Copy((Array) texturesAndSprite.Billboards[num3 + index2].Vertices, 0, (Array) this.vertexArray, index2 * 6, 6);
-                this.effect.Parameters["Texture"].SetValue((Texture) key);
+                  Array.Copy((Array)texturesAndSprite.Billboards[num3 + index2].Vertices, 0, (Array)this.vertexArray, index2 * 6, 6);
+                this.effect.Parameters["Texture"].SetValue((Texture2D)key);
                 int startVertex = num2;
                 if (num2 == 0 || elementCount + num2 > this.vertexBufferSizeInVertices)
                 {
@@ -177,20 +177,12 @@ namespace CornerSpace
                 }
                 else
                 {
-                  this.vertexBuffer.SetData<BillboardVertex>(num2 * (int) BillboardVertex.SizeInBytes, this.vertexArray, 0, elementCount, (int) BillboardVertex.SizeInBytes, SetDataOptions.NoOverwrite);
+                  this.vertexBuffer.SetData<BillboardVertex>(num2 * (int)BillboardVertex.SizeInBytes, this.vertexArray, 0, elementCount, (int)BillboardVertex.SizeInBytes, SetDataOptions.NoOverwrite);
                   num2 += elementCount;
                 }
-                Engine.GraphicsDevice.VertexDeclaration = this.vertexDeclaration;
-                Engine.GraphicsDevice.Vertices[0].SetSource((VertexBuffer) this.vertexBuffer, 0, (int) BillboardVertex.SizeInBytes);
-                this.effect.Begin();
-                foreach (EffectPass pass in this.effect.CurrentTechnique.Passes)
-                {
-                  pass.Begin();
-                  Engine.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, startVertex, elementCount / 3);
-                  pass.End();
-                }
-                this.effect.End();
-                Engine.GraphicsDevice.Vertices[0].SetSource((VertexBuffer) null, 0, 0);
+                Engine.GraphicsDevice.SetVertexBuffer(this.vertexBuffer);
+                this.effect.CurrentTechnique.Passes[0].Apply();
+                Engine.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, startVertex, elementCount / 3);
               }
             }
           }
@@ -216,17 +208,17 @@ namespace CornerSpace
         if (this.vertexBuffer != null)
         {
           this.vertexBuffer.Dispose();
-          this.vertexBuffer = (DynamicVertexBuffer) null;
+          this.vertexBuffer = null;
         }
-        this.vertexBuffer = new DynamicVertexBuffer(Engine.GraphicsDevice, this.vertexBufferSizeInVertices * (int) BillboardVertex.SizeInBytes, BufferUsage.WriteOnly);
+        this.vertexBuffer = new DynamicVertexBuffer(Engine.GraphicsDevice, typeof(BillboardVertex), this.vertexBufferSizeInVertices, BufferUsage.WriteOnly);
       }
       catch (Exception ex)
       {
-        Engine.Console.WriteErrorLine("Failed to creata a vertex buffer for billboard batch: " + ex.Message);
+        Engine.Console.WriteErrorLine("Failed to create a vertex buffer for billboard batch: " + ex.Message);
         if (this.vertexBuffer == null)
           return;
         this.vertexBuffer.Dispose();
-        this.vertexBuffer = (DynamicVertexBuffer) null;
+        this.vertexBuffer = null;
       }
     }
 

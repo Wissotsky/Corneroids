@@ -28,13 +28,13 @@ namespace CornerSpace.Screen
 
     public override void Dispose()
     {
-      Engine.SettingsManager.ResolutionChangedEvent -= new Action<Point>(((MenuScreen) this).ResolutionChanged);
+      Engine.SettingsManager.ResolutionChangedEvent -= new Action<Point>(ResolutionChanged);
     }
 
     public override void Load()
     {
       this.LoadLayers();
-      Engine.SettingsManager.ResolutionChangedEvent += new Action<Point>(((MenuScreen) this).ResolutionChanged);
+      Engine.SettingsManager.ResolutionChangedEvent += new Action<Point>(ResolutionChanged);
     }
 
     public override void Render()

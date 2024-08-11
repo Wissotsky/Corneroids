@@ -52,8 +52,8 @@ namespace CornerSpace.GUI
       }
       SpriteBatch spriteBatch = Engine.SpriteBatch;
       spriteBatch.Begin();
-      byte num = (byte) ((int) this.borderSize ?? 0);
-      if (num > (byte) 0)
+      byte num = (byte) (this.borderSize ?? 0);
+      if (num > 0)
       {
         Rectangle destinationRectangle = new Rectangle(this.Location.X, this.Location.Y, (int) this.Size.X, (int) num);
         spriteBatch.Draw(this.blankTexture, destinationRectangle, color);

@@ -50,7 +50,7 @@ namespace CornerSpace
         try
         {
           if (this.values.ContainsKey(name))
-            return (T) this.values[name];
+              return (T)Convert.ChangeType(this.values[name], typeof(T));
         }
         catch (Exception ex)
         {

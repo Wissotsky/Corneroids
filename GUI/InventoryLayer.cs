@@ -100,7 +100,7 @@ namespace CornerSpace.GUI
     private void RenderItems()
     {
       SpriteBatch spriteBatch = Engine.SpriteBatch;
-      spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
+      spriteBatch.Begin(SpriteSortMode.Immediate,BlendState.AlphaBlend);
       Engine.SetPointSamplerStateForSpritebatch();
       Rectangle positionAndSize = this.PositionAndSize;
       for (int index1 = 0; (long) index1 < (long) this.inventory.Height; ++index1)

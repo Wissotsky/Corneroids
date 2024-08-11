@@ -57,7 +57,7 @@ namespace CornerSpace
       {
         if (blockVertexBuffer == null)
         {
-          blockVertexBuffer = new VertexBufferObj(Engine.GraphicsDevice, Math.Max(vertexCount, 10000), (int) BlockVertex.SizeInBytes, Engine.VertexDeclarationPool[0], BufferUsage.WriteOnly);
+          blockVertexBuffer = new VertexBufferObj(Engine.GraphicsDevice, Engine.VertexDeclarationPool[0], Math.Max(vertexCount, 10000), BufferUsage.WriteOnly);
           ++this.numberOfCreatedVertexBuffers;
         }
         else

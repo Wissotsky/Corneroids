@@ -42,26 +42,18 @@ namespace CornerSpace
     public override void RenderFirstPerson(IRenderCamera camera)
     {
       if (this.pickedBeacon.Key == null || this.boxVertices == null && this.boxIndices == null)
-        return;
+      return;
       GraphicsDevice graphicsDevice = Engine.GraphicsDevice;
       this.effect.Parameters["World"].SetValue(Matrix.CreateTranslation(camera.GetPositionRelativeToCamera(this.pickedBeacon.Key.Position)));
       this.effect.Parameters["View"].SetValue(camera.ViewMatrix);
       this.effect.Parameters["Projection"].SetValue(camera.ProjectionMatrix);
       this.effect.Parameters["SelectorColor"].SetValue(Color.Red.ToVector4());
-      Engine.GraphicsDevice.VertexDeclaration = this.vertexDeclaration;
-      graphicsDevice.RenderState.CullMode = CullMode.None;
-      graphicsDevice.RenderState.DepthBufferEnable = true;
-      graphicsDevice.RenderState.DepthBufferWriteEnable = false;
-      graphicsDevice.RenderState.DepthBufferFunction = CompareFunction.LessEqual;
-      graphicsDevice.RenderState.AlphaBlendEnable = false;
-      this.effect.Begin();
-      foreach (EffectPass pass in this.effect.CurrentTechnique.Passes)
-      {
-        pass.Begin();
-        graphicsDevice.DrawUserIndexedPrimitives<VertexPositionColorTexture>(PrimitiveType.TriangleList, this.boxVertices, 0, this.boxVertices.Length, this.boxIndices, 0, this.boxIndices.Length / 3);
-        pass.End();
-      }
-      this.effect.End();
+      //Engine.GraphicsDevice.VertexDeclaration = this.vertexDeclaration;
+      graphicsDevice.RasterizerState = RasterizerState.CullNone;
+      graphicsDevice.DepthStencilState = DepthStencilState.Default;
+      graphicsDevice.BlendState = BlendState.Opaque;
+      this.effect.CurrentTechnique.Passes[0].Apply();
+      graphicsDevice.DrawUserIndexedPrimitives<VertexPositionColorTexture>(PrimitiveType.TriangleList, this.boxVertices, 0, this.boxVertices.Length, this.boxIndices, 0, this.boxIndices.Length / 3);
     }
 
     public override Item.UsageResult UpdateInput(InputFrame input, Player owner, float powerToUse)

@@ -132,7 +132,7 @@ namespace CornerSpace
       if (this.vertexBuffer == null || this.indexBuffer == null)
       {
         if (this.vertexBuffer == null && vertexCount > 0)
-          this.vertexBuffer = new VertexBufferObj(Engine.GraphicsDevice, vertexCount, VertexPositionColor.SizeInBytes, this.vertexDeclaration, BufferUsage.WriteOnly);
+          this.vertexBuffer = new VertexBufferObj(Engine.GraphicsDevice, this.vertexDeclaration, vertexCount, BufferUsage.WriteOnly);
         if (this.indexBuffer != null || indexCount <= 0)
           return;
         this.indexBuffer = new IndexBufferObj(Engine.GraphicsDevice, indexCount, BufferUsage.WriteOnly, IndexElementSize.SixteenBits);
@@ -144,7 +144,7 @@ namespace CornerSpace
           this.vertexBuffer.Dispose();
           this.vertexBuffer = (VertexBufferObj) null;
           if (vertexCount > 0)
-            this.vertexBuffer = new VertexBufferObj(Engine.GraphicsDevice, vertexCount, VertexPositionColor.SizeInBytes, this.vertexDeclaration, BufferUsage.WriteOnly);
+            this.vertexBuffer = new VertexBufferObj(Engine.GraphicsDevice, this.vertexDeclaration,  vertexCount, BufferUsage.WriteOnly);
         }
         if (this.indexBuffer.IndexCount >= this.engineBlocks.Count * 12 && this.indexBuffer.IndexCount <= (this.engineBlocks.Count + 10) * 12)
           return;

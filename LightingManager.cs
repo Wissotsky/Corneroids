@@ -49,7 +49,6 @@ namespace CornerSpace
     }
 
     public bool DrawLight(LightSource light) => light != null && this.lights.Add(light);
-
     public bool Begin()
     {
       if (!this.initializationSuccess)
@@ -59,9 +58,7 @@ namespace CornerSpace
       try
       {
         this.ClearTexturesFromGPUregisters();
-        Engine.GraphicsDevice.SetRenderTarget(0, this.colorRenderTarget);
-        Engine.GraphicsDevice.SetRenderTarget(1, this.normalRenderTarget);
-        Engine.GraphicsDevice.SetRenderTarget(2, this.depthRenderTarget);
+        Engine.GraphicsDevice.SetRenderTargets(this.colorRenderTarget, this.normalRenderTarget, this.depthRenderTarget);
         this.ClearRenderTargets();
         this.lightChunks.Clear();
         this.SetStencilBufferToWriteState();
@@ -96,9 +93,7 @@ namespace CornerSpace
       try
       {
         this.DisableStencilBufferWriting();
-        Engine.GraphicsDevice.SetRenderTarget(0, this.lightRenderTarget);
-        Engine.GraphicsDevice.SetRenderTarget(1, (RenderTarget2D) null);
-        Engine.GraphicsDevice.SetRenderTarget(2, (RenderTarget2D) null);
+        Engine.GraphicsDevice.SetRenderTargets(this.lightRenderTarget,null,null);
         Engine.GraphicsDevice.Clear(ClearOptions.Target, Color.Black, 1f, 0);
         this.SetGBufferTexturesToGPUregisters();
         if (Engine.SettingsManager.Lighting)
@@ -108,17 +103,17 @@ namespace CornerSpace
         }
         if (this.ssao == SettingsManager.Quality.Off)
         {
-          Engine.GraphicsDevice.SetRenderTarget(0, (RenderTarget2D) null);
-          Engine.GraphicsDevice.Textures[6] = (Texture) this.lightRenderTarget.GetTexture();
+          Engine.GraphicsDevice.SetRenderTarget(null);
+          Engine.GraphicsDevice.Textures[6] = (Texture) this.lightRenderTarget;
           this.RenderResultToScene();
         }
         else if (this.ssaoRenderTarget != null)
         {
-          Engine.GraphicsDevice.SetRenderTarget(0, this.ssaoRenderTarget);
+          Engine.GraphicsDevice.SetRenderTarget(this.ssaoRenderTarget);
           Engine.GraphicsDevice.Clear(ClearOptions.Target, Color.Black, 1f, 0);
-          Engine.GraphicsDevice.Textures[6] = (Texture) this.lightRenderTarget.GetTexture();
+          Engine.GraphicsDevice.Textures[6] = (Texture) this.lightRenderTarget;
           this.RenderSSAO(camera);
-          Engine.GraphicsDevice.SetRenderTarget(0, (RenderTarget2D) null);
+          Engine.GraphicsDevice.SetRenderTarget(null);
           this.RenderResultWithSSAOToScene();
         }
         this.beginLighting = false;
@@ -137,26 +132,26 @@ namespace CornerSpace
         this.DisposeRendertargets();
         int backBufferWidth = Engine.GraphicsDevice.PresentationParameters.BackBufferWidth;
         int backBufferHeight = Engine.GraphicsDevice.PresentationParameters.BackBufferHeight;
-        this.lightRenderTarget = new RenderTarget2D(Engine.GraphicsDevice, backBufferWidth, backBufferHeight, 1, SurfaceFormat.Color);
-        this.colorRenderTarget = new RenderTarget2D(Engine.GraphicsDevice, backBufferWidth, backBufferHeight, 1, SurfaceFormat.Color);
-        this.depthRenderTarget = new RenderTarget2D(Engine.GraphicsDevice, backBufferWidth, backBufferHeight, 1, SurfaceFormat.Single);
-        this.normalRenderTarget = new RenderTarget2D(Engine.GraphicsDevice, backBufferWidth, backBufferHeight, 1, SurfaceFormat.Color);
+        this.lightRenderTarget = new RenderTarget2D(Engine.GraphicsDevice, backBufferWidth, backBufferHeight, false, SurfaceFormat.Color, DepthFormat.None);
+        this.colorRenderTarget = new RenderTarget2D(Engine.GraphicsDevice, backBufferWidth, backBufferHeight, false, SurfaceFormat.Color, DepthFormat.None);
+        this.depthRenderTarget = new RenderTarget2D(Engine.GraphicsDevice, backBufferWidth, backBufferHeight, false, SurfaceFormat.Single, DepthFormat.None);
+        this.normalRenderTarget = new RenderTarget2D(Engine.GraphicsDevice, backBufferWidth, backBufferHeight, false, SurfaceFormat.Color, DepthFormat.None);
         this.ssaoRandomTexture = Engine.ContentManager.Load<Texture2D>("Textures/Sprites/normalVectors");
         this.combineShader = Engine.ShaderPool[14];
         this.ssaoShader = Engine.ShaderPool[15];
         this.ssaoCombineShader = Engine.ShaderPool[16];
-        this.ssaoShader.Parameters["RandomTexture"].SetValue((Texture) this.ssaoRandomTexture);
+        this.ssaoShader.Parameters["RandomTexture"].SetValue((Texture2D)this.ssaoRandomTexture);
         this.screenModel = new ModelStructure<VertexPositionTexture>(new VertexPositionTexture[4], new short[6]);
         this.screenModel.Vertices[0] = new VertexPositionTexture(new Vector3(-1f, 1f, 0.0f), new Vector2(0.0f, 0.0f));
         this.screenModel.Vertices[1] = new VertexPositionTexture(new Vector3(1f, 1f, 0.0f), new Vector2(1f, 0.0f));
         this.screenModel.Vertices[2] = new VertexPositionTexture(new Vector3(1f, -1f, 0.0f), new Vector2(1f, 1f));
         this.screenModel.Vertices[3] = new VertexPositionTexture(new Vector3(-1f, -1f, 0.0f), new Vector2(0.0f, 1f));
-        this.screenModel.Indices[0] = (short) 0;
-        this.screenModel.Indices[1] = (short) 1;
-        this.screenModel.Indices[2] = (short) 2;
-        this.screenModel.Indices[3] = (short) 2;
-        this.screenModel.Indices[4] = (short) 3;
-        this.screenModel.Indices[5] = (short) 0;
+        this.screenModel.Indices[0] = 0;
+        this.screenModel.Indices[1] = 1;
+        this.screenModel.Indices[2] = 2;
+        this.screenModel.Indices[3] = 2;
+        this.screenModel.Indices[4] = 3;
+        this.screenModel.Indices[5] = 0;
         this.initializationSuccess = true;
         return true;
       }
@@ -196,7 +191,7 @@ namespace CornerSpace
         }
         try
         {
-          this.ssaoRenderTarget = new RenderTarget2D(Engine.GraphicsDevice, width, height, 1, SurfaceFormat.Color);
+            this.ssaoRenderTarget = new RenderTarget2D(Engine.GraphicsDevice, width, height, false, SurfaceFormat.Color, DepthFormat.None, 1, RenderTargetUsage.DiscardContents);
         }
         catch (Exception ex)
         {
@@ -222,16 +217,22 @@ namespace CornerSpace
 
     private void DisableStencilBufferWriting()
     {
-      GraphicsDevice graphicsDevice = Engine.GraphicsDevice;
-      if (graphicsDevice == null)
-        return;
-      graphicsDevice.RenderState.StencilEnable = false;
-      graphicsDevice.RenderState.StencilFunction = CompareFunction.Never;
-      graphicsDevice.RenderState.StencilPass = StencilOperation.Replace;
-      graphicsDevice.RenderState.ReferenceStencil = 0;
+        GraphicsDevice graphicsDevice = Engine.GraphicsDevice;
+        if (graphicsDevice == null)
+            return;
+
+        DepthStencilState depthStencilState = new DepthStencilState
+        {
+            StencilEnable = false,
+            StencilFunction = CompareFunction.Never,
+            StencilPass = StencilOperation.Replace,
+            ReferenceStencil = 0
+        };
+
+        graphicsDevice.DepthStencilState = depthStencilState;
     }
 
-    private void DisposeRendertargets()
+        private void DisposeRendertargets()
     {
       if (this.colorRenderTarget != null && !this.colorRenderTarget.IsDisposed)
         this.colorRenderTarget.Dispose();
@@ -247,10 +248,13 @@ namespace CornerSpace
     private void PrepareStencilBufferForSSAO()
     {
       GraphicsDevice graphicsDevice = Engine.GraphicsDevice;
-      graphicsDevice.RenderState.StencilEnable = true;
-      graphicsDevice.RenderState.StencilFunction = CompareFunction.Equal;
-      graphicsDevice.RenderState.StencilPass = StencilOperation.Keep;
-      graphicsDevice.RenderState.ReferenceStencil = 1;
+      graphicsDevice.DepthStencilState = new DepthStencilState
+      {
+        StencilEnable = true,
+        StencilFunction = CompareFunction.Equal,
+        StencilPass = StencilOperation.Keep,
+        ReferenceStencil = 1
+      };
     }
 
     private void RenderBillboardLights(IRenderCamera camera)
@@ -260,8 +264,8 @@ namespace CornerSpace
     private void RenderLightChunks(IRenderCamera camera)
     {
       GraphicsDevice graphicsDevice = Engine.GraphicsDevice;
-      Vector2 vector2 = new Vector2(0.5f / (float) graphicsDevice.PresentationParameters.BackBufferWidth, 0.5f / (float) graphicsDevice.PresentationParameters.BackBufferHeight);
-      graphicsDevice.VertexDeclaration = this.vertexDeclarationPositionColor;
+      Vector2 vector2 = new Vector2(0.5f / (float)graphicsDevice.PresentationParameters.BackBufferWidth, 0.5f / (float)graphicsDevice.PresentationParameters.BackBufferHeight);
+      //graphicsDevice.VertexDeclaration = this.vertexDeclarationPositionColor;
       this.SetRenderstatesForLightPhase();
       Matrix matrix1 = Matrix.Invert(camera.ViewMatrix * camera.ProjectionMatrix);
       while (this.lightChunks.Count > 0)
@@ -276,7 +280,7 @@ namespace CornerSpace
               Effect effect = lightSource.Effect;
               Matrix transformMatrix = lightSource.TransformMatrix;
               Position3 position = Vector3.Transform(lightSource.PositionInEntitySpace, lightChunk.Owner.TransformMatrix) + lightChunk.Owner.Position;
-              if ((double) camera.GetPositionRelativeToCamera(position).LengthSquared() <= 10000.0)
+              if ((double)camera.GetPositionRelativeToCamera(position).LengthSquared() <= 10000.0)
               {
                 Matrix matrix2 = transformMatrix * Matrix.CreateTranslation(camera.GetPositionRelativeToCamera(position));
                 effect.Parameters["HalfPixel"].SetValue(vector2);
@@ -287,11 +291,8 @@ namespace CornerSpace
                 effect.Parameters["Projection"].SetValue(camera.ProjectionMatrix);
                 effect.Parameters["InverseTransform"].SetValue(matrix1);
                 lightSource.ApplyShaderVariables();
-                effect.Begin();
-                effect.CurrentTechnique.Passes[0].Begin();
+                effect.CurrentTechnique.Passes[0].Apply();
                 graphicsDevice.DrawUserIndexedPrimitives<VertexPositionColor>(PrimitiveType.TriangleList, lightSource.Model.Vertices, 0, lightSource.Model.Vertices.Length, lightSource.Model.Indices, 0, lightSource.Model.Indices.Length / 3);
-                effect.CurrentTechnique.Passes[0].End();
-                effect.End();
               }
             }
           }
@@ -302,13 +303,13 @@ namespace CornerSpace
     private void RenderLights(IRenderCamera camera)
     {
       GraphicsDevice graphicsDevice = Engine.GraphicsDevice;
-      Vector2 vector2 = new Vector2(0.5f / (float) graphicsDevice.PresentationParameters.BackBufferWidth, 0.5f / (float) graphicsDevice.PresentationParameters.BackBufferHeight);
-      graphicsDevice.VertexDeclaration = this.vertexDeclarationPositionColor;
+      Vector2 vector2 = new Vector2(0.5f / (float)graphicsDevice.PresentationParameters.BackBufferWidth, 0.5f / (float)graphicsDevice.PresentationParameters.BackBufferHeight);
+      //graphicsDevice.VertexDeclaration = this.vertexDeclarationPositionColor;
       this.SetRenderstatesForLightPhase();
       Matrix matrix1 = Matrix.Invert(camera.ViewMatrix * camera.ProjectionMatrix);
       foreach (LightSource light in this.lights)
       {
-        if (light.Enabled && (double) camera.GetPositionRelativeToCamera(light.Position).LengthSquared() <= 10000.0)
+        if (light.Enabled && (double)camera.GetPositionRelativeToCamera(light.Position).LengthSquared() <= 10000.0)
         {
           Effect effect = light.Effect;
           Matrix matrix2 = light.TransformMatrix * Matrix.CreateTranslation(camera.GetPositionRelativeToCamera(light.Position));
@@ -320,14 +321,8 @@ namespace CornerSpace
           effect.Parameters["Projection"].SetValue(camera.ProjectionMatrix);
           effect.Parameters["InverseTransform"].SetValue(matrix1);
           light.ApplyShaderVariables();
-          effect.Begin();
-          foreach (EffectPass pass in effect.CurrentTechnique.Passes)
-          {
-            pass.Begin();
-            graphicsDevice.DrawUserIndexedPrimitives<VertexPositionColor>(PrimitiveType.TriangleList, light.Model.Vertices, 0, light.Model.Vertices.Length, light.Model.Indices, 0, light.Model.Indices.Length / 3);
-            pass.End();
-          }
-          effect.End();
+          effect.CurrentTechnique.Passes[0].Apply();
+          graphicsDevice.DrawUserIndexedPrimitives<VertexPositionColor>(PrimitiveType.TriangleList, light.Model.Vertices, 0, light.Model.Vertices.Length, light.Model.Indices, 0, light.Model.Indices.Length / 3);
         }
       }
     }
@@ -335,100 +330,77 @@ namespace CornerSpace
     private void RenderResultToScene()
     {
       GraphicsDevice graphicsDevice = Engine.GraphicsDevice;
-      graphicsDevice.VertexDeclaration = this.vertexDeclarationPositionTexture;
-      graphicsDevice.RenderState.CullMode = CullMode.None;
-      graphicsDevice.RenderState.DepthBufferEnable = false;
-      graphicsDevice.RenderState.AlphaBlendEnable = false;
-      this.combineShader.Begin();
-      foreach (EffectPass pass in this.combineShader.CurrentTechnique.Passes)
-      {
-        pass.Begin();
-        graphicsDevice.DrawUserIndexedPrimitives<VertexPositionTexture>(PrimitiveType.TriangleList, this.screenModel.Vertices, 0, 4, this.screenModel.Indices, 0, 2);
-        pass.End();
-      }
-      this.combineShader.End();
+      //graphicsDevice.VertexDeclaration = this.vertexDeclarationPositionTexture;
+      graphicsDevice.RasterizerState = RasterizerState.CullNone;
+      graphicsDevice.DepthStencilState = DepthStencilState.None;
+      graphicsDevice.BlendState = BlendState.Opaque;
+      this.combineShader.CurrentTechnique.Passes[0].Apply();
+      graphicsDevice.DrawUserIndexedPrimitives<VertexPositionTexture>(PrimitiveType.TriangleList, this.screenModel.Vertices, 0, 4, this.screenModel.Indices, 0, 2);
     }
 
     private void RenderResultWithSSAOToScene()
     {
       GraphicsDevice graphicsDevice = Engine.GraphicsDevice;
-      graphicsDevice.VertexDeclaration = this.vertexDeclarationPositionTexture;
-      this.ssaoCombineShader.Parameters["SSAOTexture"].SetValue((Texture) this.ssaoRenderTarget.GetTexture());
-      graphicsDevice.RenderState.CullMode = CullMode.None;
-      graphicsDevice.RenderState.DepthBufferEnable = false;
-      graphicsDevice.RenderState.AlphaBlendEnable = false;
-      this.ssaoCombineShader.Begin();
-      foreach (EffectPass pass in this.ssaoCombineShader.CurrentTechnique.Passes)
-      {
-        pass.Begin();
-        graphicsDevice.DrawUserIndexedPrimitives<VertexPositionTexture>(PrimitiveType.TriangleList, this.screenModel.Vertices, 0, 4, this.screenModel.Indices, 0, 2);
-        pass.End();
-      }
-      this.ssaoCombineShader.End();
+      //graphicsDevice.VertexDeclaration = this.vertexDeclarationPositionTexture;
+      this.ssaoCombineShader.Parameters["SSAOTexture"].SetValue((Texture2D) this.ssaoRenderTarget);
+      graphicsDevice.RasterizerState = RasterizerState.CullNone;
+      graphicsDevice.DepthStencilState = DepthStencilState.None;
+      graphicsDevice.BlendState = BlendState.Opaque;
+      this.ssaoCombineShader.CurrentTechnique.Passes[0].Apply();
+      graphicsDevice.DrawUserIndexedPrimitives<VertexPositionTexture>(PrimitiveType.TriangleList, this.screenModel.Vertices, 0, 4, this.screenModel.Indices, 0, 2);
     }
 
     private void RenderSSAO(IRenderCamera camera)
     {
       try
       {
-        this.DisableStencilBufferWriting();
-        GraphicsDevice graphicsDevice = Engine.GraphicsDevice;
-        this.ssaoShader.Parameters["InverseTransform"].SetValue(Matrix.Invert(camera.ViewMatrix * camera.ProjectionMatrix));
-        this.ssaoShader.Parameters["RandomTexture"].SetValue((Texture) this.ssaoRandomTexture);
-        graphicsDevice.VertexDeclaration = this.vertexDeclarationPositionTexture;
-        graphicsDevice.RenderState.CullMode = CullMode.None;
-        graphicsDevice.RenderState.DepthBufferEnable = false;
-        graphicsDevice.RenderState.AlphaBlendEnable = false;
-        this.ssaoShader.Begin();
-        foreach (EffectPass pass in this.ssaoShader.CurrentTechnique.Passes)
-        {
-          pass.Begin();
-          graphicsDevice.DrawUserIndexedPrimitives<VertexPositionTexture>(PrimitiveType.TriangleList, this.screenModel.Vertices, 0, 4, this.screenModel.Indices, 0, 2);
-          pass.End();
-        }
-        this.ssaoShader.End();
-        this.DisableStencilBufferWriting();
+      this.DisableStencilBufferWriting();
+      GraphicsDevice graphicsDevice = Engine.GraphicsDevice;
+      this.ssaoShader.Parameters["InverseTransform"].SetValue(Matrix.Invert(camera.ViewMatrix * camera.ProjectionMatrix));
+      this.ssaoShader.Parameters["RandomTexture"].SetValue((Texture2D) this.ssaoRandomTexture);
+      //graphicsDevice.VertexDeclaration = this.vertexDeclarationPositionTexture;
+      graphicsDevice.RasterizerState = RasterizerState.CullNone;
+      graphicsDevice.DepthStencilState = DepthStencilState.None;
+      graphicsDevice.BlendState = BlendState.Opaque;
+      this.ssaoShader.CurrentTechnique.Passes[0].Apply();
+      graphicsDevice.DrawUserIndexedPrimitives<VertexPositionTexture>(PrimitiveType.TriangleList, this.screenModel.Vertices, 0, 4, this.screenModel.Indices, 0, 2);
+      this.DisableStencilBufferWriting();
       }
       catch (Exception ex)
       {
-        Engine.Console.WriteErrorLine("SSAO failed! " + ex.Message);
-        this.ScreenSpaceAmbientOcclusion = SettingsManager.Quality.Off;
+      Engine.Console.WriteErrorLine("SSAO failed! " + ex.Message);
+      this.ScreenSpaceAmbientOcclusion = SettingsManager.Quality.Off;
       }
     }
 
     private void SetGBufferTexturesToGPUregisters()
     {
       GraphicsDevice graphicsDevice = Engine.GraphicsDevice;
-      graphicsDevice.Textures[3] = (Texture) this.colorRenderTarget.GetTexture();
-      graphicsDevice.Textures[5] = (Texture) this.depthRenderTarget.GetTexture();
-      graphicsDevice.Textures[4] = (Texture) this.normalRenderTarget.GetTexture();
+      graphicsDevice.Textures[3] = (Texture) this.colorRenderTarget;
+      graphicsDevice.Textures[5] = (Texture) this.depthRenderTarget;
+      graphicsDevice.Textures[4] = (Texture) this.normalRenderTarget;
     }
 
     private void SetRenderstatesForLightPhase()
     {
       GraphicsDevice graphicsDevice = Engine.GraphicsDevice;
-      graphicsDevice.RenderState.DepthBufferEnable = true;
-      graphicsDevice.RenderState.DepthBufferWriteEnable = false;
-      graphicsDevice.RenderState.DepthBufferFunction = CompareFunction.Greater;
-      graphicsDevice.RenderState.StencilEnable = true;
-      graphicsDevice.RenderState.StencilFunction = CompareFunction.Equal;
-      graphicsDevice.RenderState.StencilPass = StencilOperation.Keep;
-      graphicsDevice.RenderState.ReferenceStencil = 1;
-      graphicsDevice.RenderState.AlphaBlendEnable = true;
-      graphicsDevice.RenderState.SourceBlend = Blend.One;
-      graphicsDevice.RenderState.DestinationBlend = Blend.One;
-      graphicsDevice.RenderState.CullMode = CullMode.CullCounterClockwiseFace;
+      graphicsDevice.DepthStencilState = DepthStencilState.Default;
+      graphicsDevice.BlendState = BlendState.Additive;
+      graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
     }
 
     private void SetStencilBufferToWriteState()
     {
       GraphicsDevice graphicsDevice = Engine.GraphicsDevice;
       if (graphicsDevice == null)
-        return;
-      graphicsDevice.RenderState.StencilEnable = true;
-      graphicsDevice.RenderState.StencilFunction = CompareFunction.Always;
-      graphicsDevice.RenderState.StencilPass = StencilOperation.Replace;
-      graphicsDevice.RenderState.ReferenceStencil = 1;
+      return;
+      graphicsDevice.DepthStencilState = new DepthStencilState()
+      {
+      StencilEnable = true,
+      StencilFunction = CompareFunction.Always,
+      StencilPass = StencilOperation.Replace,
+      ReferenceStencil = 1
+      };
     }
 
     private void GraphicsChanged() => this.Initialize();

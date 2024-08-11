@@ -52,17 +52,14 @@ namespace CornerSpace.Screen
     {
       if (this.itemBeingDragged.Key != (Item) null)
       {
-        Rectangle spriteCoordsRect = this.itemBeingDragged.Key.SpriteCoordsRect;
-        Texture2D spriteAtlasTexture = this.itemBeingDragged.Key.SpriteAtlasTexture;
-        Rectangle destinationRectangle = new Rectangle(this.Mouse.Position.X - 32, this.Mouse.Position.Y - 32, 64, 64);
-        SpriteBatch spriteBatch = Engine.SpriteBatch;
-        spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
-        Engine.GraphicsDevice.SamplerStates[0].MinFilter = TextureFilter.Point;
-        Engine.GraphicsDevice.SamplerStates[0].MipFilter = TextureFilter.Point;
-        Engine.GraphicsDevice.SamplerStates[0].MagFilter = TextureFilter.Point;
-        spriteBatch.Draw(spriteAtlasTexture, destinationRectangle, new Rectangle?(spriteCoordsRect), Color.White);
-        spriteBatch.DrawString(Engine.Font, this.itemBeingDragged.Value.ToString(), new Vector2((float) destinationRectangle.X, (float) destinationRectangle.Y), Color.White);
-        spriteBatch.End();
+      Rectangle spriteCoordsRect = this.itemBeingDragged.Key.SpriteCoordsRect;
+      Texture2D spriteAtlasTexture = this.itemBeingDragged.Key.SpriteAtlasTexture;
+      Rectangle destinationRectangle = new Rectangle(this.Mouse.Position.X - 32, this.Mouse.Position.Y - 32, 64, 64);
+      SpriteBatch spriteBatch = Engine.SpriteBatch;
+      spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, null, null);
+      spriteBatch.Draw(spriteAtlasTexture, destinationRectangle, spriteCoordsRect, Color.White);
+      spriteBatch.DrawString(Engine.Font, this.itemBeingDragged.Value.ToString(), new Vector2((float)destinationRectangle.X, (float)destinationRectangle.Y), Color.White);
+      spriteBatch.End();
       }
       this.RenderItemDescription(this.Mouse.Position);
     }
@@ -261,7 +258,7 @@ namespace CornerSpace.Screen
             rectangle = new Rectangle(Math.Min(Math.Max(rectangle.X, 0), Engine.GraphicsDevice.PresentationParameters.BackBufferWidth - rectangle.Width), Math.Min(Math.Max(rectangle.Y, 0), Engine.GraphicsDevice.PresentationParameters.BackBufferHeight - rectangle.Height), rectangle.Width, rectangle.Height);
             this.itemDescLayer.PositionAndSize = rectangle;
             this.itemDescLayer.Render();
-            Engine.SpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
+            Engine.SpriteBatch.Begin(SpriteSortMode.Immediate,BlendState.AlphaBlend);
             for (int index = 0; index < this.itemDescription.Count; ++index)
               Engine.SpriteBatch.DrawString(Engine.Font, this.itemDescription[index] ?? string.Empty, new Vector2((float) rectangle.X, (float) (rectangle.Y + index * rectangleSize.Y / this.itemDescription.Count)), Color.White);
             Engine.SpriteBatch.End();

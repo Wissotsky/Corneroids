@@ -54,7 +54,7 @@ namespace CornerSpace.Screen
       this.backgroundLayer.Render();
       this.scrollbarLayer.Render();
       SpriteBatch spriteBatch = Engine.SpriteBatch;
-      spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
+      spriteBatch.Begin(SpriteSortMode.Immediate,BlendState.AlphaBlend);
       Engine.SetPointSamplerStateForSpritebatch();
       for (int index1 = 0; index1 < 8; ++index1)
       {

@@ -85,8 +85,7 @@ namespace CornerSpace.GUI
         Item obj = blueprint.Result.Item;
         int count = blueprint.Result.Count;
         string name = blueprint.Result.Item.Name;
-        if (count > 1)
-          name + " (x" + (object) count + ")";
+        string displayName = count > 1 ? name + " (x" + (object) count + ")" : name;
         if (this.backgroundLayer == null)
           this.backgroundLayer = new WindowLayer(new Rectangle(0, 0, 200, 100));
       }

@@ -54,7 +54,7 @@ namespace CornerSpace
       }
       Astronaut astronaut1 = this;
       // ISSUE: explicit non-virtual call
-      astronaut1.Orientation = __nonvirtual (astronaut1.Orientation) * Quaternion.CreateFromYawPitchRoll(0.2f, 0.2f, 0.0f);
+      astronaut1.Orientation = astronaut1.Orientation * Quaternion.CreateFromYawPitchRoll(0.2f, 0.2f, 0.0f);
       this.pushbackCounter = 700;
     }
 

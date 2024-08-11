@@ -10,26 +10,25 @@ using Microsoft.Xna.Framework.Graphics;
 #nullable disable
 namespace CornerSpace
 {
-  public struct DynamicBlockVertex
+  public struct DynamicBlockVertex : IVertexType
   {
     private Vector3 position;
     private Vector2 uv;
     private Vector3 normal;
     private Byte4 data;
-    public static readonly byte SizeInBytes = 36;
-    public static readonly VertexElement[] VertexElements = new VertexElement[4]
-    {
-      new VertexElement((short) 0, (short) 0, VertexElementFormat.Vector3, VertexElementMethod.Default, VertexElementUsage.Position, (byte) 0),
-      new VertexElement((short) 0, (short) 12, VertexElementFormat.Vector2, VertexElementMethod.Default, VertexElementUsage.TextureCoordinate, (byte) 0),
-      new VertexElement((short) 0, (short) 20, VertexElementFormat.Vector3, VertexElementMethod.Default, VertexElementUsage.Normal, (byte) 0),
-      new VertexElement((short) 0, (short) 32, VertexElementFormat.Byte4, VertexElementMethod.Default, VertexElementUsage.TextureCoordinate, (byte) 1)
-    };
+    public static readonly int SizeInBytes = 36;
+    public static readonly VertexDeclaration VertexDeclaration = new VertexDeclaration(
+      new VertexElement(0, VertexElementFormat.Vector3, VertexElementUsage.Position, 0),
+      new VertexElement(12, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 0),
+      new VertexElement(20, VertexElementFormat.Vector3, VertexElementUsage.Normal, 0),
+      new VertexElement(32, VertexElementFormat.Byte4, VertexElementUsage.TextureCoordinate, 1)
+    );
 
     public DynamicBlockVertex(Vector3 pos, Vector2 uv, byte index)
     {
       this.position = pos;
       this.uv = uv;
-      this.data = new Byte4(index, (byte) 0, (byte) 0, (byte) 0);
+      this.data = new Byte4(index, 0, 0, 0);
       this.normal = Vector3.Up;
     }
 
@@ -56,5 +55,7 @@ namespace CornerSpace
       get => this.normal;
       set => this.normal = value;
     }
+
+    VertexDeclaration IVertexType.VertexDeclaration => VertexDeclaration;
   }
 }

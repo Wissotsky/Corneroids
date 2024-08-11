@@ -204,7 +204,7 @@ namespace CornerSpace
 
     public byte[] Serialize()
     {
-      byte[] numArray = new byte[(IntPtr) (uint) ((int) this.Width * (int) this.Height * 4)];
+      byte[] numArray = new byte[(int) ((uint) this.Width * (uint) this.Height * 4)];
       for (int index1 = 0; (long) index1 < (long) this.height; ++index1)
       {
         for (int index2 = 0; (long) index2 < (long) this.width; ++index2)

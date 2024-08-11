@@ -44,7 +44,7 @@ namespace CornerSpace
 
     public Rectangle? CreateBlockSprite(BlockType blockType, BlockTextureAtlas blockTextureAtlas)
     {
-      if (!((Item) blockType != (Item) null) || blockTextureAtlas == null)
+      if (!((Item)blockType != (Item)null) || blockTextureAtlas == null)
         return new Rectangle?();
       if (this.blockSprites.ContainsKey(blockType))
         return new Rectangle?(this.blockSprites[blockType]);
@@ -52,10 +52,10 @@ namespace CornerSpace
       {
         if (this.textureAtlas == null)
         {
-          this.textureAtlas = new Texture2D(Engine.GraphicsDevice, 512, 512, 1, TextureUsage.None, SurfaceFormat.Color);
+          this.textureAtlas = new Texture2D(Engine.GraphicsDevice, 512, 512, false, SurfaceFormat.Color);
           Color[] data = new Color[262144];
           for (int index = 0; index < data.Length; ++index)
-            data[index] = Color.TransparentBlack;
+            data[index] = Color.Transparent;
           this.textureAtlas.SetData<Color>(data);
         }
         int count = this.blockSprites.Count;
@@ -63,17 +63,17 @@ namespace CornerSpace
         BlockTextureCoordinates textureCoordinates = blockType.GetTextureCoordinates();
         Byte4 topCoordinates = textureCoordinates.TopCoordinates;
         Byte4 wallCoordinates = textureCoordinates.WallCoordinates;
-        Rectangle sourceRect1 = new Rectangle((int) topCoordinates.X * 32, (int) topCoordinates.Y * 32, (int) topCoordinates.Z * 32, (int) topCoordinates.W * 32);
-        Rectangle sourceRect2 = new Rectangle((int) wallCoordinates.X * 32, (int) wallCoordinates.Y * 32, (int) wallCoordinates.Z * 32, (int) wallCoordinates.W * 32);
+        Rectangle sourceRect1 = new Rectangle((int)topCoordinates.X * 32, (int)topCoordinates.Y * 32, (int)topCoordinates.Z * 32, (int)topCoordinates.W * 32);
+        Rectangle sourceRect2 = new Rectangle((int)wallCoordinates.X * 32, (int)wallCoordinates.Y * 32, (int)wallCoordinates.Z * 32, (int)wallCoordinates.W * 32);
         Color[] colorArray = new Color[1024];
         byte[] interpolationArray = new byte[1024];
-        Matrix wallTransformMatrix1 = this.CreateLeftWallTransformMatrix(sourceRect2.Width, sourceRect2.Height);
-        Matrix wallTransformMatrix2 = this.CreateRightWallTransformMatrix(sourceRect2.Width, sourceRect2.Height);
-        Matrix roofTransformMatrix = this.CreateRoofTransformMatrix(sourceRect1.Width, sourceRect1.Height);
-        this.CreateSprite(blockTextureAtlas.Texture, sourceRect1, colorArray, interpolationArray, ref roofTransformMatrix);
-        this.CreateSprite(blockTextureAtlas.Texture, sourceRect2, colorArray, interpolationArray, ref wallTransformMatrix1);
-        this.CreateSprite(blockTextureAtlas.Texture, sourceRect2, colorArray, interpolationArray, ref wallTransformMatrix2);
-        this.textureAtlas.SetData<Color>(0, new Rectangle?(rectangle), colorArray, 0, 1024, SetDataOptions.None);
+        Matrix wallTransformMatrix1 = CreateLeftWallTransformMatrix(sourceRect2.Width, sourceRect2.Height);
+        Matrix wallTransformMatrix2 = CreateRightWallTransformMatrix(sourceRect2.Width, sourceRect2.Height);
+        Matrix roofTransformMatrix = CreateRoofTransformMatrix(sourceRect1.Width, sourceRect1.Height);
+        CreateSprite(blockTextureAtlas.Texture, sourceRect1, colorArray, interpolationArray, ref roofTransformMatrix);
+        CreateSprite(blockTextureAtlas.Texture, sourceRect2, colorArray, interpolationArray, ref wallTransformMatrix1);
+        CreateSprite(blockTextureAtlas.Texture, sourceRect2, colorArray, interpolationArray, ref wallTransformMatrix2);
+        this.textureAtlas.SetData<Color>(0, rectangle, colorArray, 0, 1024);
         this.blockSprites.Add(blockType, rectangle);
         return new Rectangle?(rectangle);
       }
