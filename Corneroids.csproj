@@ -26,8 +26,14 @@
     <Product>Corneroids</Product>
     <Copyright>Copyright © Mikko Pulkki 2012</Copyright>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <Configurations>Debug;Release</Configurations>
+    <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <LangVersion>8.0</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Corneroids x86|x86'">
     <OutputPath>bin\x86\Debug\</OutputPath>
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>

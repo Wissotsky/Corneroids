@@ -37,8 +37,8 @@ namespace CornerSpace
       IntPtr wParam,
       IntPtr lParam);
 
-    [DllImport("user32.dll")]
-    private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+    [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr")]
+    private static extern IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
 
     public InputReader(GameWindow gameWindow)
     {
@@ -46,7 +46,7 @@ namespace CornerSpace
       this.maxLength = 100;
       this.stringBuilder = new StringBuilder(this.maxLength, this.maxLength);
       this.listenMessagesDelegate = new InputReader.WndProc(this.MessageRead);
-      this.wndProc = (IntPtr) InputReader.SetWindowLong(gameWindow.Handle, -4, (int) Marshal.GetFunctionPointerForDelegate((Delegate) this.listenMessagesDelegate));
+      this.wndProc = SetWindowLongPtr(gameWindow.Handle, -4, Marshal.GetFunctionPointerForDelegate(this.listenMessagesDelegate));
     }
 
     public void Begin()
